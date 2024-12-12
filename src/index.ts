@@ -6,7 +6,6 @@ import compression from 'compression';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import 'dotenv/config';
-
 import router from './router';
 
 const app = express();
@@ -15,6 +14,7 @@ app.use(cors({credentials: true,}));
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
+app.use('/', router());
 
 const server = http.createServer(app);
 server.listen(process.env.PORT || 5000, ()=>{
@@ -32,5 +32,3 @@ mongoose.Promise = Promise;
 mongoose.connect(MONGO_DB);
 mongoose.connection.on('error', (error: Error) => console.log(error) );
 mongoose.connection.on('connected', () => console.log(`Connected to ${MONGO_DB}`) );
-
-app.use('/', router());
