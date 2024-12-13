@@ -32,3 +32,4 @@ mongoose.Promise = Promise;
 mongoose.connect(MONGO_DB);
 mongoose.connection.on('error', (error: Error) => console.log(error) );
 mongoose.connection.on('connected', () => console.log(`Connected to ${MONGO_DB}`) );
+console.log(Date.now());

@@ -10,11 +10,12 @@ const TierlistSchema = new mongoose.Schema({
     },
 })
 
-export const TierModel = mongoose.model('Tierlist', TierlistSchema);
+export const TierModel = mongoose.model('Tierlist', TierlistSchema); //CHANGE NAMING TO TEMPLATE
 
 export const getTierlists = () => TierModel.find();
 export const getTierlistByName = (searchname:string) =>{TierModel.findOne({name: searchname})};
+export const getTierlistById = (t_id:string) => TierModel.findOne({_id: t_id});
 export const createTierlist = (values: Record<string, any>) => new TierModel(values).save().then((tierlist) => tierlist.toObject());
-export const deleteTierlist = (t_id:string) =>{TierModel.findOneAndDelete({_id: t_id})};
+export const deleteTierlistById = (t_id:string) =>TierModel.findOneAndDelete({_id: t_id});
 
-// NOT TODO Use MongoDB for app based on 2 dimentional arrays
+// TODO Tomorrow

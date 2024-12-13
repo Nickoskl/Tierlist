@@ -1,12 +1,12 @@
 import express from 'express';
 
 import authentication from './authentication';
-import tierlist from './tierlists';
+import tier_template from './tier_template';
 
 const router = express.Router();
 
 export default (): express.Router => {
     authentication(router);
-    tierlist(router);
+    tier_template(router);
     return router;
 };
