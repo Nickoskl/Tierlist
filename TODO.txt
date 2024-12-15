@@ -1,0 +1,9 @@
+Proper TODO file to prevent me from ripping my eyes out every time I search for my progress.
+
+Make clear errors when something does not work
+Way better router
+Add URL shortener
+Add delete option for tier templates
+Install Joy for input field validation
+Creating templates and list put user
+Upload Images
