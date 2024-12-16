@@ -13,5 +13,5 @@ Proper TODO file to prevent me from ripping my eyes out every time I search for 
 
 
 Install Joy for input field validation
-Creating templates and list put user
+Update user_edit to account for sessions
 Upload Images
