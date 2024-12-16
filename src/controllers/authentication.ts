@@ -1,7 +1,47 @@
 import express from 'express';
-import { getUserByEmail, createUser, getUserBySessionToken, getUserById } from '../db/users';
+import { getUserByEmail, createUser, getUserBySessionToken, getUserById, deleteUserById, getUsers } from '../db/users';
 import { random, authentication } from '../helpers';
-import { get } from 'lodash';
+import { forEach, get } from 'lodash';
+import { deleteTierlistById } from '../db/tier_list';
+
+export const users_get = async (req:express.Request, res: express.Response) =>{
+    try{
+
+        const users = await getUsers();
+
+        return res.status(200).json(users).end();
+
+    }catch(error){
+        console.log("Error on users_get in func");
+        return res.sendStatus(400);
+    }
+}
+export const user_delete = async (req:express.Request, res:express.Response) =>{
+    try{
+        
+        const {id} = req.params;
+
+        const user = await getUserById(id);
+
+        if(!user || !user.lists){
+            return res.sendStatus(400);
+        }
+
+        user.lists.forEach(async tierlist => {
+            await deleteTierlistById(tierlist);
+        });
+
+        const user_del = await deleteUserById(id);
+
+        return res.json(user_del);
+
+
+    }catch(error){
+        console.log("Error on user_delete in func");
+        return res.sendStatus(400);
+    }
+}
+
 
 export const user_edit = async (req:express.Request, res:express.Response) =>{
     try{
@@ -39,13 +79,23 @@ export const user_get = async (req:express.Request, res:express.Response) =>{
     try{
 
         const {id} = req.params;
+        const isSuper = get(req, 'identity.super') as unknown as boolean;
+        const loginId = get(req, 'identity._id') as unknown as string;
+
         const user = await getUserById(id);
+
+
         if(!user || !user.session){
             return res.sendStatus(400);
         }
 
-        return res.status(200).json(user).end();
-
+        if(isSuper || loginId == id){
+            const superuser = await getUserById(id).select('+session.token +session.date +session.ip');
+            return res.status(200).json(superuser).end();
+        }else{
+            return res.status(200).json(user).end();
+        }
+        
     }catch(error){
         console.log("Error on user_get in func");
         return res.sendStatus(400);

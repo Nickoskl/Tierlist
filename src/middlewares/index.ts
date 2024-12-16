@@ -34,7 +34,7 @@ export const mustBeOwnerOrAdmin = async (req:express.Request, res:express.Respon
     try{
 
         const loggedInUserSuper = get(req, 'identity.super') as unknown as boolean;
-        const loggedInUserId = get(req, 'identity._id') as unknown as boolean;
+
 
 
         const {id} = req.params;
@@ -52,6 +52,23 @@ export const mustBeOwnerOrAdmin = async (req:express.Request, res:express.Respon
 
     }catch(error){
         console.log("Error on mustbeowner in func");
+        return res.sendStatus(400);
+    }
+}
+
+export const mustBeAdmin = async (req:express.Request, res:express.Response, next:express.NextFunction) =>{
+    try{
+
+        const isSuper = get(req, 'identity.super') as unknown as boolean;
+
+        if(!isSuper){
+            return res.sendStatus(403);
+        }
+
+        return next();
+
+    }catch(error){
+        console.log("Error on mustBeAdmin in func");
         return res.sendStatus(400);
     }
 }

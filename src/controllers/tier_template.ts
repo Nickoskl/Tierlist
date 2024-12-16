@@ -1,7 +1,35 @@
 import express from 'express';
-import { get } from 'lodash';
-import { getTemplateTierlists, getTemplateTierlistById, createTemplateTierlist } from '../db/tier_template';
+import { forEach, get } from 'lodash';
+import { getTemplateTierlists, getTemplateTierlistById, createTemplateTierlist, deleteTemplateTierlistById } from '../db/tier_template';
+import { getTierlistsByTemplate, deleteTierlistById } from '../db/tier_list';
 import { list_checksum_calc } from '../helpers';
+
+
+export const tier_template_delete = async (req:express.Request, res:express.Response) =>{
+    try{
+
+        const {id} = req.params;
+
+        const tierlists = await getTierlistsByTemplate(id).select('+_id');
+
+        if(!tierlists){
+            return res.sendStatus(400);
+        }
+        
+        tierlists.forEach(async tierlist => {
+            await deleteTierlistById(tierlist._id as unknown as string);
+        });
+
+        const tier_temp = await deleteTemplateTierlistById(id);
+
+        return res.json(tier_temp);
+            
+    }catch(error){
+        console.log("Error on tier_template_delete in func");
+        return res.sendStatus(400);
+    }
+}
+
 
 export const tier_template_get = async (req:express.Request, res: express.Response,) => {
     

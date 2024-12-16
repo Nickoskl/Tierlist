@@ -1,8 +1,24 @@
 import express from 'express';
 import { get } from 'lodash';
-import { createTierlist, getTierlistById, getTierlists } from '../db/tier_list';
+import { createTierlist, deleteTierlistById, getTierlistById, getTierlists, } from '../db/tier_list';
 import { getTemplateTierlistById } from '../db/tier_template';
 import { list_checksum_calc } from '../helpers';
+import { getUserById } from '../db/users';
+
+export const tier_list_delete = async (req:express.Request, res:express.Response) =>{
+    try{
+
+        const {id} = req.params;
+
+        const tierlist = await deleteTierlistById(id);
+
+        return res.json(tierlist);
+
+    }catch(error){
+        console.log("Error on tier_list_delete in func");
+        return res.sendStatus(400);
+    }
+}
 
 export const tier_list_update = async (req:express.Request, res:express.Response) => {
     try{
@@ -72,10 +88,13 @@ export const tier_list_create = async (req: express.Request, res: express.Respon
 
         const loggedInUserEmail = get(req, 'identity.email') as unknown as string;
         const loggedInUserName = get(req, 'identity.name') as unknown as string;
+        const loggedInId = get(req, 'identity._id') as unknown as string;
 
         const templateFromDB = await getTemplateTierlistById(template).select('+list_config.level_table');
+        const userFromDB = await getUserById(loggedInId);
 
-        if (!name || !description || !template || !placement || !loggedInUserEmail || !templateFromDB || !templateFromDB.name || !templateFromDB.list_config){
+
+        if (!name || !description || !template || !placement || !loggedInUserEmail || !templateFromDB || !templateFromDB.name || !templateFromDB.list_config ||!userFromDB){
             return res.sendStatus(400);
         }
 
@@ -83,6 +102,8 @@ export const tier_list_create = async (req: express.Request, res: express.Respon
             console.log('Tierlist length does not match template length');
             return res.sendStatus(400);
         }
+
+        
 
         const tierlist_name:string = templateFromDB.name + " - " + name;
 
@@ -98,6 +119,10 @@ export const tier_list_create = async (req: express.Request, res: express.Respon
                 list_checksum: list_checksum_calc(placement, tierlist_name, loggedInUserEmail)
             }
         });
+
+        userFromDB.lists.push(tierlist._id);
+
+        await userFromDB.save();
 
         return res.status(200).json(tierlist).end();
     }catch(error){
