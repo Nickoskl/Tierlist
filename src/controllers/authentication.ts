@@ -4,6 +4,24 @@ import { random, authentication } from '../helpers';
 import { forEach, get } from 'lodash';
 import { deleteTierlistById } from '../db/tier_list';
 
+export const users_lists_get = async (req:express.Request, res:express.Response) =>{
+    try{
+
+        const {id} = req.params;
+
+        const lists = await getUserById(id);
+
+        if(!lists){
+            return res.sendStatus(400);
+        }
+
+        return res.status(200).json(lists.lists).end();
+
+    }catch(error){
+
+    }
+}
+
 export const users_get = async (req:express.Request, res: express.Response) =>{
     try{
 
