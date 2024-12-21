@@ -12,4 +12,7 @@ export const list_checksum_calc =(level_table:string[]|string, img_table:string[
     return crypto.createHmac('sha256', [level_table, img_table, usr_email].join('/')).update(SECRET).digest('hex')
 };
 
+
+export const rand_id =() => crypto.randomInt(10000,99999);
+
 // TODO Incorporate User salt to list checksum

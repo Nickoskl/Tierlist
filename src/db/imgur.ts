@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 
 const ImgurDBSchema = new mongoose.Schema({
-    username: {type: String, required: true },
+    id: {type: String, required: true },
+    imgur: {type: String, required:true},
+    ext: {type: String, required:true}
 });
 
 export const ImgurModel = mongoose.model('Imgur', ImgurDBSchema);
 
-export const getUsers = () => ImgurModel.find();
+export const getImgById = (url_id:String) => ImgurModel.findOne({id: url_id});

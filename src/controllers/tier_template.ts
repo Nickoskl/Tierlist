@@ -1,5 +1,5 @@
 import express from 'express';
-import { forEach, get } from 'lodash';
+import { get } from 'lodash';
 import { getTemplateTierlists, getTemplateTierlistById, createTemplateTierlist, deleteTemplateTierlistById } from '../db/tier_template';
 import { getTierlistsByTemplate, deleteTierlistById } from '../db/tier_list';
 import { list_checksum_calc } from '../helpers';
