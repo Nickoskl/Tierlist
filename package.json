@@ -18,6 +18,7 @@
     "@types/express": "^4.17.21",
     "@types/lodash": "^4.17.13",
     "@types/mongoose": "^5.11.96",
+    "@types/multer": "^1.4.12",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
@@ -33,6 +34,7 @@
     "express": "^4.21.1",
     "lodash": "^4.17.21",
     "mongoose": "^8.8.4",
+    "multer": "^1.4.5-lts.1",
     "rest_api": "file:",
     "tierlist": "file:"
   }

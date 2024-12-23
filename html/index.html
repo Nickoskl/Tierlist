@@ -11,6 +11,10 @@
 
 </head>
 <body>
+    <form method="post" enctype="multipart/form-data" action="http://localhost:5000/img/upload">
+        <input type="file" accept=".png,.jpg" name="file">
+        <button>Upload PNG or JPG up to 10 MB</button>
+    </form>
     <img src="http://localhost:5000/img/44158.png" alt="">
     <header>
         <div class="pointer header_btn">
