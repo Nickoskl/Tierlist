@@ -39,6 +39,7 @@ export const users_get = async (req:express.Request, res: express.Response) =>{
 }
 export const user_delete = async (req:express.Request, res:express.Response) =>{
     try{
+
         
         const {id} = req.params;
 
@@ -47,6 +48,16 @@ export const user_delete = async (req:express.Request, res:express.Response) =>{
         if(!user || !user.lists || !user.avatar){
             return res.sendStatus(400);
         }
+
+        // HARDCODED STOP TO DELETE ADMIN USER
+        // HARDCODED STOP TO DELETE ADMIN USER
+        // HARDCODED STOP TO DELETE ADMIN USER
+
+        if(user.username == 'Admin'){
+            return res.sendStatus(418);
+        }
+
+
         const dot_pos:number = user.avatar.search(".");
         const only_id:string = user.avatar.substring(dot_pos);
 
@@ -85,6 +96,15 @@ export const user_edit = async (req:express.Request, res:express.Response) =>{
         if(!user || !user.session || !user.authentication || !user.authentication.salt){
             return res.sendStatus(400);
         }
+
+        // HARDCODED STOP TO EDIT ADMIN USER
+        // HARDCODED STOP TO EDIT ADMIN USER
+        // HARDCODED STOP TO EDIT ADMIN USER
+
+        if(user.username == 'Admin'){
+            return res.sendStatus(418);
+        }
+
         
         const isSuper = get(req, 'identity.super') as unknown as boolean;
 

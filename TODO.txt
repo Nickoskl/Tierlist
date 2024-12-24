@@ -13,4 +13,3 @@ Proper TODO file to prevent me from ripping my eyes out every time I search for 
 
 
 Update user_edit to account for sessions
-if only 1 superuser No option to delete or edit
