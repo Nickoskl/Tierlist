@@ -12,4 +12,4 @@
 Proper TODO file to prevent me from ripping my eyes out every time I search for my progress.
 
 
-Update user_edit to account for sessions
+Use Joy for field validation

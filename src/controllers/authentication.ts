@@ -89,12 +89,22 @@ export const user_delete = async (req:express.Request, res:express.Response) =>{
 export const user_edit = async (req:express.Request, res:express.Response) =>{
     try{
         const {id} = req.params;
-        const {email, password_new, password_old, username, img} = req.body;
+        const {email, password_new, password_old, username, img, sesionOut} = req.body;
     
         const user = await getUserById(id).select('+session.token +session.date +session.ip +authentication.salt +authentication.password');
-    
+
         if(!user || !user.session || !user.authentication || !user.authentication.salt){
             return res.sendStatus(400);
+        }
+
+        if(email.length<1 && email.length<1 && password_old.length<1 && username.length<1 && img<1 && sesionOut.length>0){
+            user.session.token.splice(sesionOut,1);
+            user.session.date.splice(sesionOut,1);
+            user.session.ip.splice(sesionOut,1);
+
+            await user.save();
+
+            return res.status(200).json(user).end();
         }
 
         // HARDCODED STOP TO EDIT ADMIN USER
