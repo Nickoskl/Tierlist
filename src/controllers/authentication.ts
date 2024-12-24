@@ -3,6 +3,9 @@ import { getUserByEmail, createUser, getUserBySessionToken, getUserById, deleteU
 import { random, authentication } from '../helpers';
 import { forEach, get } from 'lodash';
 import { deleteTierlistById } from '../db/tier_list';
+import { imgur_upload, imgur_delete } from '../api/imgur';
+import { createImgUpload, getImgById } from '../db/imgur';
+import { rand_id } from "../helpers";
 
 export const users_lists_get = async (req:express.Request, res:express.Response) =>{
     try{
@@ -41,7 +44,15 @@ export const user_delete = async (req:express.Request, res:express.Response) =>{
 
         const user = await getUserById(id);
 
-        if(!user || !user.lists){
+        if(!user || !user.lists || !user.avatar){
+            return res.sendStatus(400);
+        }
+        const dot_pos:number = user.avatar.search(".");
+        const only_id:string = user.avatar.substring(dot_pos);
+
+        const avatarToDel =  await getImgById(parseInt(only_id));
+
+        if(!avatarToDel){
             return res.sendStatus(400);
         }
 
@@ -49,7 +60,10 @@ export const user_delete = async (req:express.Request, res:express.Response) =>{
             await deleteTierlistById(tierlist);
         });
 
+
         const user_del = await deleteUserById(id);
+
+        const imgDeleted = await imgur_delete(avatarToDel.deletehash);
 
         return res.json(user_del);
 
@@ -194,7 +208,7 @@ export const user_login = async (req: express.Request, res:express.Response) =>{
 export const user_register = async (req: express.Request, res: express.Response) => {
     try {
 
-        const { email, password, username } = req.body;
+        const { email, password, username} = req.body;
 
         if (!email || !password || !username){
             return res.sendStatus(400);
@@ -206,6 +220,12 @@ export const user_register = async (req: express.Request, res: express.Response)
             return res.sendStatus(400);
         }
 
+        if (!process.env.IMGUR_Album_Hash) {
+            return res.sendStatus(400);
+        }
+
+
+
         const salt = random();
         const user = await createUser({
             email,
@@ -216,6 +236,45 @@ export const user_register = async (req: express.Request, res: express.Response)
                 password: authentication(salt, password),
             },
         });
+
+        if( req.file && req.file.size > 10000000 && !req.file.mimetype && (req.file.mimetype == 'image/png' || req.file.mimetype == 'image/jpeg')){
+
+            const userForImg = await getUserByEmail(email);
+
+            if(userForImg){
+                const slash_pos:number = req.file.mimetype.search("/");
+                const only_ext:string = req.file.mimetype.substring(slash_pos+1);
+
+                const resp:Axios.AxiosXHR<FormData> = await imgur_upload(req.file,process.env.IMGUR_Album_Hash);
+
+                const data_extr = get(resp, 'data') as unknown as string;
+                const {data} = JSON.parse(data_extr)
+
+                if(resp.status !== 200 || !resp){
+                    return res.sendStatus(400);
+                }
+
+                var idForDB:number = 0;
+
+                do{
+                    idForDB = rand_id();
+                
+                }while(await getImgById(idForDB))
+
+                const imgFromImgur = await createImgUpload({
+                            id: idForDB,
+                            imgur: data.id,
+                            ext: only_ext,
+                            deletehash: data.deletehash
+                        });
+
+                
+                userForImg.avatar= `${idForDB}.${only_ext}`;
+                await userForImg.save();
+            }
+            
+
+        }
 
     return res.status(200).json(user).end();
 

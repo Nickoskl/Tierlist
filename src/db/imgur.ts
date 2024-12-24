@@ -9,6 +9,6 @@ const ImgurDBSchema = new mongoose.Schema({
 
 export const ImgurModel = mongoose.model('Imgur', ImgurDBSchema);
 
-export const getImgById = (url_id:String) => ImgurModel.findOne({id: url_id});
+export const getImgById = (url_id:Number) => ImgurModel.findOne({id: url_id});
 export const createImgUpload = (values: Record<string, any>) => new ImgurModel(values).save().then((img) => img.toObject());
 export const deleteImgById = (url_id:String) => ImgurModel.findOneAndDelete({id: url_id});

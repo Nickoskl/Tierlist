@@ -3,36 +3,35 @@ import express from "express";
 import 'dotenv/config';
 import {rand_id} from "../helpers";
 import {getImgById, createImgUpload, deleteImgById} from "../db/imgur";
-import { get, merge } from 'lodash';
+import { get, merge, parseInt } from 'lodash';
+import {imgur_delete, imgur_get, imgur_upload} from '../api/imgur';
 
 export const delete_img = async (req:express.Request, res:express.Response)=>{
     try{
 
         const {id, ext} = req.params;
         
-        if(!id || !ext){
-            return res.sendStatus(400);
-        }
+        const idNum:number = +id;
 
-        const imgDb = await getImgById(id);
+        const imgDb = await getImgById(idNum);
 
         if(!imgDb || !imgDb.deletehash){
             return res.sendStatus(400);
         }
 
-        const options = {
-            method: 'DELETE',
-            url: `https://api.imgur.com/3/account/${process.env.IMGUR_Username}/image/${imgDb.deletehash}`,
-            headers: {
-                'Authorization': process.env.IMGUR_BEARER,
-            },
-          };
+        if(ext == imgDb.ext){
+            return res.sendStatus(400);
+        }
 
+        const resp:Axios.AxiosXHR<unknown> = await imgur_delete(imgDb.deletehash);
 
-          const resp  = await axios.request(options);
-          const delDB = await deleteImgById(id);
+        if(resp.status !== 200){
+            return resp;
+        }
 
-          return res.json(resp.data).end();
+        const delDB = await deleteImgById(id);
+
+          return res.json(delDB).end();
 
     }catch(error){
         console.log(error);
@@ -55,23 +54,8 @@ export const upload_img = async (req:express.Request,res:express.Response)=>{
         const only_ext:string = req.file.mimetype.substring(slash_pos+1);
 
 
-        let form = new FormData();
+        const resp:Axios.AxiosXHR<FormData> = await imgur_upload(req.file,process.env.IMGUR_Album_Hash);
 
-        form.append('image', new Blob([req.file.buffer]));
-        form.append( 'album', process.env.IMGUR_Album_Hash);
-
-        const options = {
-            responseType: 'multipart/form-data',
-            method: 'POST',
-            url: `https://api.imgur.com/3/upload`,
-            headers: {
-                "Content-Type": "multipart/form-data",
-                'Authorization': process.env.IMGUR_BEARER,
-            },
-            data:form
-          };
-
-          const resp  = await axios.request(options);
 
         if(resp.status !== 200 || !resp){
             return res.sendStatus(400);
@@ -80,13 +64,13 @@ export const upload_img = async (req:express.Request,res:express.Response)=>{
         const data_extr = get(resp, 'data') as unknown as string;
         const {data} = JSON.parse(data_extr)
         
-        var idForDB = {};
+        var idForDB:number = 0;
 
         do{
 
             idForDB = rand_id();
 
-        }while(await getImgById(`${idForDB}`))
+        }while(await getImgById(idForDB))
 
         const imgFromImgur = await createImgUpload({
             id: idForDB,
@@ -109,34 +93,29 @@ export const get_img = async(req:express.Request,res:express.Response)=>{
 
         const {id,ext} = req.params;
 
-        const imgDb = await getImgById(id);
+        const idNum:number = +id;
+
+        const imgDb = await getImgById(idNum);
 
         if(!imgDb || !id || !ext){
             return res.sendStatus(400);
         }
 
         console.log(rand_id());
-        const options = {
-            method: 'GET',
-            url: `https://api.imgur.com/3/account/${process.env.IMGUR_Username}/image/${imgDb.imgur}`,
-            headers: {
-                'Authorization': process.env.IMGUR_BEARER,
-            }
-          };
 
-        const response = await axios.request(options);
+        const resp:Axios.AxiosXHR<unknown> = await imgur_get(imgDb.imgur);
 
-        if (!response || !response.data ){
-            return res.sendStatus(400);
+        if(resp.status !== 200){
+            return resp;
         }
 
-        const extract_link:string = get(response.data, 'data.link') as unknown as string;
+        const extract_link:string = get(resp.data, 'data.link') as unknown as string;
 
-        const data = await fetch(extract_link);
+        const imgData = await fetch(extract_link);
 
         //console.log(data);
 
-        return res.send(Buffer.from(await data.arrayBuffer()));
+        return res.send(Buffer.from(await imgData.arrayBuffer()));
 
     }catch(error){
         console.log(error);
