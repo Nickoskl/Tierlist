@@ -14,9 +14,9 @@ export const tier_template_delete = async (req:express.Request, res:express.Resp
 
         const tierlists = await getTierlistsByTemplate(id).select('+_id');
 
-        const temp_imgs = await getTemplateTierlistById(id).select('+list_config.img_table');
+        const temp = await getTemplateTierlistById(id).select('+list_config.img_table');
 
-        if(!tierlists || !temp_imgs || !temp_imgs.list_config){
+        if(!tierlists || !temp || !temp.list_config){
             return res.sendStatus(400);
         }
         
@@ -24,16 +24,25 @@ export const tier_template_delete = async (req:express.Request, res:express.Resp
             await deleteTierlistById(tierlist._id as unknown as string);
         });
 
-        temp_imgs.list_config.img_table.forEach(async img => {
+        temp.list_config.img_table.forEach(async img => {
             const len = img.length;
             const img_id = img.substring(0,len-4);
             const dbImg = await getImgById(parseInt(img_id));
-            if(dbImg){
-                await imgur_delete(dbImg.deletehash);
-                await deleteImgById(parseInt(img_id));
+            if(!dbImg){
+                return res.sendStatus(400);
             }
+            await imgur_delete(dbImg.deletehash);
+            await deleteImgById(parseInt(img_id));
         });
 
+        const temp_bg_len = temp.background.length;
+        const temp_bg_id = temp.background.substring(0,temp_bg_len-4);
+        const bgImg = await getImgById(parseInt(temp_bg_id));
+        if(!bgImg){
+            return res.sendStatus(400);
+        }
+        await imgur_delete(bgImg.deletehash);
+        await deleteImgById(parseInt(temp_bg_id));
         const tier_temp = await deleteTemplateTierlistById(id);
 
         return res.json(tier_temp);
