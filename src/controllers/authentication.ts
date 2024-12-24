@@ -78,7 +78,7 @@ export const user_delete = async (req:express.Request, res:express.Response) =>{
 export const user_edit = async (req:express.Request, res:express.Response) =>{
     try{
         const {id} = req.params;
-        const {email, password_new, password_old, username} = req.body;
+        const {email, password_new, password_old, username, img} = req.body;
     
         const user = await getUserById(id).select('+session.token +session.date +session.ip +authentication.salt +authentication.password');
     
@@ -96,6 +96,10 @@ export const user_edit = async (req:express.Request, res:express.Response) =>{
         user.username = username;
         user.authentication.password = authentication(user.authentication.salt, password_new);
         user.email = email;
+
+        if(img!==user.avatar){
+            user.avatar = img;
+        }
 
         await user.save();
 
@@ -208,7 +212,7 @@ export const user_login = async (req: express.Request, res:express.Response) =>{
 export const user_register = async (req: express.Request, res: express.Response) => {
     try {
 
-        const { email, password, username} = req.body;
+        const { email, password, username, img} = req.body;
 
         if (!email || !password || !username){
             return res.sendStatus(400);
@@ -224,12 +228,17 @@ export const user_register = async (req: express.Request, res: express.Response)
             return res.sendStatus(400);
         }
 
+        let avatar = 'default';
 
+        if(img.length>0){
+            avatar = img;
+        }
 
         const salt = random();
         const user = await createUser({
             email,
             username,
+            avatar,
             super: false,
             authentication: {
                 salt,
@@ -237,44 +246,8 @@ export const user_register = async (req: express.Request, res: express.Response)
             },
         });
 
-        if( req.file && req.file.size > 10000000 && !req.file.mimetype && (req.file.mimetype == 'image/png' || req.file.mimetype == 'image/jpeg')){
 
-            const userForImg = await getUserByEmail(email);
 
-            if(userForImg){
-                const slash_pos:number = req.file.mimetype.search("/");
-                const only_ext:string = req.file.mimetype.substring(slash_pos+1);
-
-                const resp:Axios.AxiosXHR<FormData> = await imgur_upload(req.file,process.env.IMGUR_Album_Hash);
-
-                const data_extr = get(resp, 'data') as unknown as string;
-                const {data} = JSON.parse(data_extr)
-
-                if(resp.status !== 200 || !resp){
-                    return res.sendStatus(400);
-                }
-
-                var idForDB:number = 0;
-
-                do{
-                    idForDB = rand_id();
-                
-                }while(await getImgById(idForDB))
-
-                const imgFromImgur = await createImgUpload({
-                            id: idForDB,
-                            imgur: data.id,
-                            ext: only_ext,
-                            deletehash: data.deletehash
-                        });
-
-                
-                userForImg.avatar= `${idForDB}.${only_ext}`;
-                await userForImg.save();
-            }
-            
-
-        }
 
     return res.status(200).json(user).end();
 

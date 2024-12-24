@@ -14,7 +14,6 @@ Proper TODO file to prevent me from ripping my eyes out every time I search for 
 
 Install Joy for input field validation
 Update user_edit to account for sessions
-Delete ulloaded images with template deletion
-Image for profile picture
+Delete uploaded images with template deletion
 image for tierlist background
 if only 1 superuser No option to delete or edit
