@@ -3,6 +3,8 @@ import { get } from 'lodash';
 import { getTemplateTierlists, getTemplateTierlistById, createTemplateTierlist, deleteTemplateTierlistById } from '../db/tier_template';
 import { getTierlistsByTemplate, deleteTierlistById } from '../db/tier_list';
 import { list_checksum_calc } from '../helpers';
+import {imgur_delete} from '../api/imgur';
+import {getImgById,deleteImgById} from '../db/imgur';
 
 
 export const tier_template_delete = async (req:express.Request, res:express.Response) =>{
@@ -12,12 +14,24 @@ export const tier_template_delete = async (req:express.Request, res:express.Resp
 
         const tierlists = await getTierlistsByTemplate(id).select('+_id');
 
-        if(!tierlists){
+        const temp_imgs = await getTemplateTierlistById(id).select('+list_config.img_table');
+
+        if(!tierlists || !temp_imgs || !temp_imgs.list_config){
             return res.sendStatus(400);
         }
         
         tierlists.forEach(async tierlist => {
             await deleteTierlistById(tierlist._id as unknown as string);
+        });
+
+        temp_imgs.list_config.img_table.forEach(async img => {
+            const len = img.length;
+            const img_id = img.substring(0,len-4);
+            const dbImg = await getImgById(parseInt(img_id));
+            if(dbImg){
+                await imgur_delete(dbImg.deletehash);
+                await deleteImgById(parseInt(img_id));
+            }
         });
 
         const tier_temp = await deleteTemplateTierlistById(id);
@@ -63,11 +77,11 @@ export const template_list = async (req: express.Request, res: express.Response)
 export const tier_template_create = async (req: express.Request, res: express.Response) => {
     try {
 
-        const { name, description, level_table, img_table } = req.body;
+        const { name, description, level_table, img_table, background } = req.body;
 
         const loggedInUserEmail = get(req, 'identity.email') as unknown as string;
 
-        if (!name || !description || !level_table || !img_table || !loggedInUserEmail){
+        if (!name || !description || !level_table || !img_table || !loggedInUserEmail || !background){
             console.log(req.body);
             return res.sendStatus(400);
         }
@@ -75,6 +89,7 @@ export const tier_template_create = async (req: express.Request, res: express.Re
         const template = await createTemplateTierlist({
             name,
             description,
+            background,
             created: new Date(),
             list_config: {
                 level_table,

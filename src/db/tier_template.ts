@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const TierlistTempSchema = new mongoose.Schema({
     name: {type: String, required: true},
     description:{ type: String, required:true},
+    background:{ type: String, required: true},
     created: { type: Date, required:true},
     list_config: {
         level_table:[{type: String, required:true, select:false}],

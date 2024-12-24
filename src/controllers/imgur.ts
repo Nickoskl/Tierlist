@@ -29,7 +29,7 @@ export const delete_img = async (req:express.Request, res:express.Response)=>{
             return resp;
         }
 
-        const delDB = await deleteImgById(id);
+        const delDB = await deleteImgById(parseInt(id));
 
           return res.json(delDB).end();
 
