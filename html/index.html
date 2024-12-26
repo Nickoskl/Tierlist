@@ -11,10 +11,10 @@
 
 </head>
 <body>
-    <form method="post" enctype="multipart/form-data" action="http://localhost:5000/img/upload">
+    <!-- <form method="post" enctype="multipart/form-data" action="http://localhost:5000/img/upload">
         <input type="file" accept=".png,.jpg" name="file">
         <button>Upload PNG or JPG up to 10 MB</button>
-    </form>
+    </form> -->
     <img src="http://localhost:5000/img/44158.png" alt="">
     <header>
         <div class="pointer header_btn">
@@ -32,6 +32,19 @@
     </header>
     <div class="middle_title">
         <h3>TIERLIST</h3>
+    </div>
+    <div class="admin_menu">
+        <div class="admin_menu_title">
+            <h3>ADMIN MENU</h3>
+        </div>
+        <div class="pointer admin_menu_item">
+            <img src="./icons/plus-icon.svg" alt="">
+            <h5>New Template</h5>
+        </div>
+        <div class="pointer admin_menu_item">
+            <img src="./icons/male-icon.svg" alt="">
+            <h5>Users</h5>
+        </div>
     </div>
     <div class="main">
         <div class="basic_list">
@@ -75,6 +88,53 @@
                 <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="" class="list_item_img">
                 <h5 class="list_item_title">Test Item</h5>
             </div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="template_action">
+            <h3>Template Title</h3>
+            <div class="pointer template_btn">
+                <img src="./icons/close-square-icon.svg" alt="">
+                <h5>Delete</h5>
+            </div>
+            <div class="pointer template_btn">
+                <img src="./icons/plus-icon.svg" alt="">
+                <h5>Title Image</h5>
+            </div>
+            <div class="pointer template_btn">
+                <img src="./icons/pencil-icon.svg" alt="">
+                <h5>Save</h5>
+            </div>
+        </div>
+        <div class="template_board">
+            <h3>Tiers</h3>
+            <div class="template_board_tiers">
+                <h5 class="pointer">Best</h5>
+                <h5 class="pointer">Good</h5>
+                <h5 class="pointer">Average</h5>
+                <h5 class="pointer">Bad</h5>
+                <h5 class="pointer">Worst</h5>
+            </div>
+            <img class="tier_plus_icon pointer" src="./icons/plus-icon.svg" alt="">
+            <h3>Images</h3>
+            <div class="template_board_images">
+                <div class="board_img">
+                    <img class="pointer" src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                </div>
+                <div class="board_img">
+                    <img class="pointer" src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                </div>
+                <div class="board_img">
+                    <img class="pointer" src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                </div>
+                <div class="board_img">
+                    <img class="pointer" src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                </div>
+                <div class="board_img">
+                    <img class="pointer" src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                </div>
+            </div>
+            <img class="tier_plus_icon pointer" src="./icons/plus-icon.svg" alt="">
         </div>
     </div>
     <footer>

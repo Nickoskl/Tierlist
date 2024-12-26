@@ -242,3 +242,213 @@ footer{
     font-weight:400;
     letter-spacing: 2px;
 }
+
+.admin_menu{
+  width:50vw;
+  margin:0 auto;
+  border-radius:10px 10px 0 0;
+  background-color:#222831;
+  z-index:-1;
+  color:#d0d0d2;
+  font-size:20px;
+  text-align:center;
+  font-family: "Source Code Pro", serif;
+}
+
+.admin_menu h3,.admin_menu h5{
+  padding:7% 13%;
+  margin:0;
+  text-align:center;
+  vertical-align:middle;
+  font-weight:500;
+}
+
+.admin_menu_title{
+  display:inline-block;
+  opacity:0.5;
+  width:300px;
+}
+
+.admin_menu_item{
+  display:inline-block;
+  width:25%;
+  transition:all 0.3s;
+}
+
+.admin_menu_item:hover{
+  transform:scale(1.1);
+  transition:all 0.3s;
+}
+
+.admin_menu_item h5{
+  display:inline-block;
+}
+
+.admin_menu_item img{
+  display:inline-block;
+  vertical-align:middle;
+  width:30px;
+}
+
+.template_action{
+  margin:0 auto;
+  color:#d0d0d2;
+  text-align:center;
+  font-family: "Source Code Pro", serif;
+}
+
+.template_action h3{
+  padding:3%;
+  font-weight:500;
+  font-size:30px;
+}
+
+.template_btn{
+  display:inline-block;
+  width:30%;
+  transition:all 0.3s;
+  background-color:#222831;
+  border-radius:10px;
+  padding: 2%;
+  font-size:20px;
+  margin:1%;
+}
+
+.template_btn:hover{
+  transform:scale(1.1);
+  transition:all 0.3s;
+}
+
+
+.template_btn img{
+  display:inline-block;
+  vertical-align:middle;
+  width:30px;
+}
+
+.template_btn h5{
+  display:inline-block;
+  font-weight:500;
+  margin:0;
+  padding:2%;
+}
+
+.template_board{
+  margin:0 auto;
+  color:#d0d0d2;
+  text-align:center;
+  font-family: "Source Code Pro", serif;
+  border-radius:10px;
+  padding: 2%;
+  font-size:20px;
+  margin:1%;
+  transition:all 0.3s;
+}
+
+.template_board h3{
+  padding:2%;
+  font-weight:500;
+}
+
+.template_board_tiers h5{
+  font-weight:500;
+  background-color:#222831;
+  margin:0;
+  display:inline-block;
+  padding:2% 4%;
+  position:relative;
+  border-radius:10px;
+  transition:all 0.3s;
+}
+
+
+.template_board_tiers h5::before{
+  width:20px;
+  border-radius:10px;
+  height:20px;
+  position:absolute;
+  top:10px;
+  left:10px;
+  content:"1";
+  background-color:#222831;
+}
+
+.template_board_tiers h5::after{
+  width:110px;
+  border-radius:10px;
+  position:absolute;
+  font-size:200%;
+  top:50%;
+  left:50%;
+  content:"X";
+  transform:translate(-50%,-50%);
+  backdrop-filter:blur(5px);
+  transition:all 0.3s;
+  opacity:0;
+}
+
+.template_board_tiers h5:hover::after{
+  width:110px;
+  border-radius:10px;
+  position:absolute;
+  font-size:200%;
+  top:50%;
+  left:50%;
+  content:"X";
+  transform:translate(-50%,-50%);
+  backdrop-filter:blur(5px);
+  transition:all 0.3s;
+  opacity:1;
+}
+
+.tier_plus_icon{
+  width:90px;
+  height:60px;
+  font-weight:500;
+  background-color:#222831;
+  margin:1%;
+  display:inline-block;
+  padding:2% 4%;
+  position:relative;
+  border-radius:10px;
+  transition:all 0.3s;
+}
+
+.tier_plus_icon:hover{
+  transform:scale(1.1);
+  transition:all 0.3s;
+}
+
+.board_img{
+  width:100px;
+  display:inline-block;
+}
+
+.board_img::after{
+  width:110px;
+  border-radius:10px;
+  position:absolute;
+  font-size:200%;
+  top:50%;
+  left:50%;
+  content:"dwadaX";
+  transform:translate(-50%,-50%);
+  backdrop-filter:blur(5px);
+  transition:all 0.3s;
+  opacity:1;
+  background-color:black;
+}
+
+.board_img:hover::after{
+  width:110px;
+  border-radius:10px;
+  position:absolute;
+  font-size:200%;
+  top:50%;
+  left:50%;
+  content:"X";
+  transform:translate(-50%,-50%);
+  backdrop-filter:blur(5px);
+  transition:all 0.3s;
+  opacity:1;
+}

@@ -18,3 +18,4 @@
 +Better router and internal information sharing with less hits on the database.
 +Better scalability
 +Asset for deletion should be scheduled for later at a specific time for controlled deletion
++Validate images/files of the contents before uploading to the server
