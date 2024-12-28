@@ -114,16 +114,16 @@
                 <h5 draggable="true" ondrag="move(this,2)" class="drag">Average</h5>
                 <h5 draggable="true" ondrag="move(this,3)" class="drag">Bad</h5>
                 <h5 draggable="true" ondrag="move(this,4)" class="drag">Worst</h5>
-                <h5 draggable="true" ondrag="move(this,0)" class="drag">Best</h5>
-                <h5 draggable="true" ondrag="move(this,1)" class="drag">Good</h5>
-                <h5 draggable="true" ondrag="move(this,2)" class="drag">Average</h5>
-                <h5 draggable="true" ondrag="move(this,3)" class="drag">Bad</h5>
-                <h5 draggable="true" ondrag="move(this,4)" class="drag">Worst</h5>
-                <h5 draggable="true" ondrag="move(this,0)" class="drag">Best</h5>
-                <h5 draggable="true" ondrag="move(this,1)" class="drag">Good</h5>
-                <h5 draggable="true" ondrag="move(this,2)" class="drag">Average</h5>
-                <h5 draggable="true" ondrag="move(this,3)" class="drag">Bad</h5>
-                <h5 draggable="true" ondrag="move(this,4)" class="drag">Worst</h5>
+                <h5 draggable="true" ondrag="move(this,5)" class="drag">Best</h5>
+                <h5 draggable="true" ondrag="move(this,6)" class="drag">Good</h5>
+                <h5 draggable="true" ondrag="move(this,7)" class="drag">Average</h5>
+                <h5 draggable="true" ondrag="move(this,8)" class="drag">Bad</h5>
+                <h5 draggable="true" ondrag="move(this,9)" class="drag">Worst</h5>
+                <h5 draggable="true" ondrag="move(this,10)" class="drag">Best</h5>
+                <h5 draggable="true" ondrag="move(this,11)" class="drag">Good</h5>
+                <h5 draggable="true" ondrag="move(this,12)" class="drag">Average</h5>
+                <h5 draggable="true" ondrag="move(this,13)" class="drag">Bad</h5>
+                <h5 draggable="true" ondrag="move(this,14)" class="drag">Worst</h5>
             </div>
             <img class="tier_plus_icon pointer" src="./icons/plus-icon.svg" alt="">
             <h3>Images</h3>
@@ -145,6 +145,42 @@
                 </div>
             </div>
             <img class="tier_plus_icon pointer" src="./icons/plus-icon.svg" alt="">
+        </div>
+    </div>
+    <div class="main">
+        <div class="tierlist_from_temp">
+            <div class="tierlist_action">
+                <h3>Template Title</h3>
+                <div class="pointer template_btn">
+                    <img src="./icons/close-square-icon.svg" alt="">
+                    <h5>Delete</h5>
+                </div>
+                <div class="pointer template_btn">
+                    <img src="./icons/pencil-icon.svg" alt="">
+                    <h5>Save</h5>
+                </div>
+            </div>
+            <div class="tierlist_board">
+                <div class="tier_levels">
+                    <div class="tier_level"></div>
+                    <div class="tier_level"></div>
+                    <div class="tier_level"></div>
+                    <div class="tier_level"></div>
+                    <div class="tier_level"></div>
+                </div>
+                <div class="tier_images">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                </div>
+            </div>
         </div>
     </div>
     <footer>
@@ -245,11 +281,46 @@ for(var i = 0; i < draggable.length; i++) {
 }, false);
 };
 
+// for(var i = 0; i < boundingclient.length; i++) {
+//     tier_level_move_arr[i] = draggable[i].getBoundingClientRect();
+// };
+var tier_level_move_arr =[];
 
+function getlevelboxes(){
+    for(var k = 0; k < boundingclient.length; k++) {
+        draggable[k].addEventListener('mousemove', () => {
+            // console.log(boundingclient[k]);
+        });
+    };
+}
+var intervalId;
 function move(element,i) {
 
-        element.style.top = event.clientY -boundingclient[i].y -(boundingclient[i].height/2) +"px";
-        element.style.left =event.clientX -boundingclient[i].x - (tier_box_rect.x - main_rect.x) +"px";
+    element.style.top = event.clientY -boundingclient[i].y -(boundingclient[i].height/2) +"px";
+    element.style.left =event.clientX -boundingclient[i].x - (tier_box_rect.x - main_rect.x) +"px";
+
+    // console.log(boundingclient[i].left+ " SELECT");
+    // console.log(boundingclient[i-1].left);
+    // console.log(parseInt(boundingclient[i].width));
+    var px_pos = element.style.left.search("px")
+    // console.log(parseInt(element.style.left.substring(px_pos,1)));
+    // console.log(element.style.left+"REAL");
+
+    var elm_width = 105
+    // console.log(boundingclient[i]);
+    var index_of_elm_under= boundingclient.findIndex( s => s.width >= 105 )
+    console.log(index_of_elm_under);
+    console.log(draggable[0]);
+    if(parseInt(element.style.left.substring(px_pos,1))>parseInt(boundingclient[i].width)){
+        draggable[i-1].style.transform = "translate(50%,0)";
+        // console.log("TRIGGER")
+    }
+
+    if (intervalId){
+        return 0;
+    }
+    intervalId = setInterval(getlevelboxes(),1000);
+        
 }
 function allowDrop(element) {
     event.preventDefault();

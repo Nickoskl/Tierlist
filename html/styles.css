@@ -347,6 +347,8 @@ footer{
   margin:1%;
   transition:all 0.3s;
   position:relative;
+  user-drag:none;
+  user-select:none;
 }
 
 .template_board h3{
@@ -363,7 +365,8 @@ footer{
   position:relative;
   border-radius:10px;
   user-drag:none;
-  transition:opacity 0.3s;
+  user-select:none;
+  transition:opacity 0.3s, transform 0.3s;
 }
 
 
