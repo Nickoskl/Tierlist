@@ -75,15 +75,16 @@ textarea:not([rows]) {
 }
 
 
-
-
-
-
-
+:root{
+  --pseudo-text: "just some text";
+  }
 
 
 body{
-    background-color:#31363f;
+    background:#31363f;
+    background:url('./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png') no-repeat;
+    background-size:contain;
+    backdrop-filter:blur(10px) opacity(1);
     margin:0;
 }
 
@@ -93,6 +94,7 @@ header{
     margin:0 auto;
     box-shadow:0 50px 100px rgba(0,0,0,0.5);
     border-radius:10px;
+    background:#31363f;
 }
 
 .header_btn{
@@ -148,6 +150,7 @@ header{
     border-radius:15px;
     padding:2%;
     margin-bottom:10%;
+    background:#31363f;
 }
 
 .basic_list{
@@ -246,7 +249,7 @@ footer{
 .admin_menu{
   width:50vw;
   margin:0 auto;
-  border-radius:10px 10px 0 0;
+  border-radius:10px;
   background-color:#222831;
   z-index:-1;
   color:#d0d0d2;
@@ -343,6 +346,7 @@ footer{
   font-size:20px;
   margin:1%;
   transition:all 0.3s;
+  position:relative;
 }
 
 .template_board h3{
@@ -358,18 +362,19 @@ footer{
   padding:2% 4%;
   position:relative;
   border-radius:10px;
-  transition:all 0.3s;
+  user-drag:none;
+  transition:opacity 0.3s;
 }
 
 
 .template_board_tiers h5::before{
-  width:20px;
-  border-radius:10px;
-  height:20px;
+  width:25px;
+  border-radius:20px;
+  height:25px;
   position:absolute;
-  top:10px;
-  left:10px;
-  content:"1";
+  top:3px;
+  content: var(--pseudo-text);
+  left:3px;
   background-color:#222831;
 }
 
@@ -383,7 +388,7 @@ footer{
   content:"X";
   transform:translate(-50%,-50%);
   backdrop-filter:blur(5px);
-  transition:all 0.3s;
+  transition:opacity 0.3s;
   opacity:0;
 }
 
@@ -397,7 +402,7 @@ footer{
   content:"X";
   transform:translate(-50%,-50%);
   backdrop-filter:blur(5px);
-  transition:all 0.3s;
+  transition:opacity 0.3s;
   opacity:1;
 }
 
@@ -420,28 +425,33 @@ footer{
 }
 
 .board_img{
-  width:100px;
+  width:20%;
   display:inline-block;
+  position:relative;
+  overflow:hidden;
+  height:5vw;
+  border-radius:10px;
+}
+
+.board_img img{
+  transform:translate(0,-25%);
 }
 
 .board_img::after{
-  width:110px;
-  border-radius:10px;
+  padding:55%;
   position:absolute;
-  font-size:200%;
+  font-size:2vw;
   top:50%;
   left:50%;
-  content:"dwadaX";
+  content:"X";
   transform:translate(-50%,-50%);
   backdrop-filter:blur(5px);
   transition:all 0.3s;
-  opacity:1;
-  background-color:black;
+  opacity:0;
 }
 
 .board_img:hover::after{
-  width:110px;
-  border-radius:10px;
+  padding:55%;
   position:absolute;
   font-size:200%;
   top:50%;

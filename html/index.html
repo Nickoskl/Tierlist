@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 
 </head>
-<body>
+<body class="body">
     <!-- <form method="post" enctype="multipart/form-data" action="http://localhost:5000/img/upload">
         <input type="file" accept=".png,.jpg" name="file">
         <button>Upload PNG or JPG up to 10 MB</button>
@@ -108,30 +108,40 @@
         </div>
         <div class="template_board">
             <h3>Tiers</h3>
-            <div class="template_board_tiers">
-                <h5 class="pointer">Best</h5>
-                <h5 class="pointer">Good</h5>
-                <h5 class="pointer">Average</h5>
-                <h5 class="pointer">Bad</h5>
-                <h5 class="pointer">Worst</h5>
+            <div class="template_board_tiers" ondrop="" ondragover="allowDrop(this)">
+                <h5 draggable="true" ondrag="move(this,0)" class="drag">Best</h5>
+                <h5 draggable="true" ondrag="move(this,1)" class="drag">Good</h5>
+                <h5 draggable="true" ondrag="move(this,2)" class="drag">Average</h5>
+                <h5 draggable="true" ondrag="move(this,3)" class="drag">Bad</h5>
+                <h5 draggable="true" ondrag="move(this,4)" class="drag">Worst</h5>
+                <h5 draggable="true" ondrag="move(this,0)" class="drag">Best</h5>
+                <h5 draggable="true" ondrag="move(this,1)" class="drag">Good</h5>
+                <h5 draggable="true" ondrag="move(this,2)" class="drag">Average</h5>
+                <h5 draggable="true" ondrag="move(this,3)" class="drag">Bad</h5>
+                <h5 draggable="true" ondrag="move(this,4)" class="drag">Worst</h5>
+                <h5 draggable="true" ondrag="move(this,0)" class="drag">Best</h5>
+                <h5 draggable="true" ondrag="move(this,1)" class="drag">Good</h5>
+                <h5 draggable="true" ondrag="move(this,2)" class="drag">Average</h5>
+                <h5 draggable="true" ondrag="move(this,3)" class="drag">Bad</h5>
+                <h5 draggable="true" ondrag="move(this,4)" class="drag">Worst</h5>
             </div>
             <img class="tier_plus_icon pointer" src="./icons/plus-icon.svg" alt="">
             <h3>Images</h3>
-            <div class="template_board_images">
-                <div class="board_img">
-                    <img class="pointer" src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+            <div class="template_board_images" ondrop="">
+                <div class="pointer board_img">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
                 </div>
-                <div class="board_img">
-                    <img class="pointer" src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                <div class="pointer board_img">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
                 </div>
-                <div class="board_img">
-                    <img class="pointer" src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                <div class="pointer board_img">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
                 </div>
-                <div class="board_img">
-                    <img class="pointer" src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                <div class="pointer board_img">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
                 </div>
-                <div class="board_img">
-                    <img class="pointer" src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
+                <div class="pointer board_img">
+                    <img src="./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png" alt="">
                 </div>
             </div>
             <img class="tier_plus_icon pointer" src="./icons/plus-icon.svg" alt="">
@@ -146,18 +156,102 @@
 document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
 
  var clickable = document.getElementsByClassName("pointer");
+ var draggable = document.getElementsByClassName("drag");
+ 
+    const body_box = document.getElementsByClassName("body");
+    const main_box = document.getElementsByClassName("main");
+    const temp_board_tiers_box_box = document.getElementsByClassName("template_board_tiers");
+    var main_rect = main_box[1].getBoundingClientRect();//##########TOCHANGELAITER
+    var body_rect = body_box[0].getBoundingClientRect();
+    var tier_box_rect = temp_board_tiers_box_box[0].getBoundingClientRect();
+
+
+
+
+
+//  ##############################DRAG
+
+var boundingclient = [];
+var green_val = [];
+var red_val = [];
+
+
+    if ((draggable.length%2)=== 0){
+            for(var i = 0; i < draggable.length; i++) {
+                console.log("IsGOOD")
+
+                green_val[i] = 255 / (draggable.length/2)*i+1;
+            }
+            for(var i = draggable.length; i => 0; i--) {
+                console.log("IsGOOD")
+                red_val[i]=255 / (draggable.length/2)*i+1;
+            }
+          }else{
+            console.log("IsNOTGOOD")
+
+            green_val[i] = 255 / (draggable.length-1);
+            red_val[i]=255 / (draggable.length-1);
+          }
+
+
+
+for(var i = 0; i < draggable.length; i++) {
+
+          draggable[ i ].style.setProperty("--pseudo-text", `"${i+1}"`);
+        
+
+
+          draggable[ i ].style.setProperty("background-color", `rgb(${[i]},${[i]},0)`);
+
+
+    boundingclient.push(draggable[i].getBoundingClientRect());
+
+    draggable[i].addEventListener('mouseover', () => {
+        document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
+    });
+    draggable[i].addEventListener('mousedown', () => {
+        document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-grab-icon.svg'), auto";
+    });
+    draggable[i].addEventListener('mouseup', () => {
+        document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
+    });
+    draggable[i].addEventListener('mouseleave', () => {
+        document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
+    });
+    draggable[i].addEventListener("dragstart", function(e) {
+    var img = document.createElement("img");
+    img.src = "";
+    e.dataTransfer.setDragImage(img, 0, 0);
+    document.body.style.cursor = 'none';
+}, false);
+};
+
+
+function move(element,i) {
+
+        element.style.top = event.clientY -boundingclient[i].y -(boundingclient[i].height/2) +"px";
+        element.style.left =event.clientX -boundingclient[i].x - (tier_box_rect.x - main_rect.x) +"px";
+}
+function allowDrop(element) {
+    event.preventDefault();
+}
+function drop(element){
+    event.preventDefault();
+    var data = event.dataTransfer.getData("text");
+    event.target.appendChild(document.getElementById(data));
+}
+
+//  ##############################HOVER
 
  for(var i = 0; i < clickable.length; i++) {
     clickable[i].addEventListener('mouseover', () => {
     document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
   });
-};
-
-  for(var i = 0; i < clickable.length; i++) {
-    clickable[i].addEventListener('mouseleave', () => {
+  clickable[i].addEventListener('mouseleave', () => {
     document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
   });
-  };
+};
+
 
     </script>
 </body>
