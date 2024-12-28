@@ -357,7 +357,7 @@ footer{
 .template_board_tiers h5{
   font-weight:500;
   background-color:#222831;
-  margin:0;
+  margin:0.5% 0;
   display:inline-block;
   padding:2% 4%;
   position:relative;
@@ -370,11 +370,12 @@ footer{
 .template_board_tiers h5::before{
   width:25px;
   border-radius:20px;
-  height:25px;
+  height:20px;
   position:absolute;
-  top:3px;
+  top:5px;
+  font-size:80%;
   content: var(--pseudo-text);
-  left:3px;
+  left:5px;
   background-color:#222831;
 }
 

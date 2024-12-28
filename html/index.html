@@ -124,7 +124,6 @@
                 <h5 draggable="true" ondrag="move(this,2)" class="drag">Average</h5>
                 <h5 draggable="true" ondrag="move(this,3)" class="drag">Bad</h5>
                 <h5 draggable="true" ondrag="move(this,4)" class="drag">Worst</h5>
-                <h5 draggable="true" ondrag="move(this,4)" class="drag">Worst</h5>
             </div>
             <img class="tier_plus_icon pointer" src="./icons/plus-icon.svg" alt="">
             <h3>Images</h3>
@@ -167,70 +166,61 @@ document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-ar
     var tier_box_rect = temp_board_tiers_box_box[0].getBoundingClientRect();
 
 
-
-
-
-//  ##############################DRAG
-
 var boundingclient = [];
 var green_val = [];
 var red_val = [];
-var combine = [[],[]];
 var done_j = 0;
 
+////////////////////////////////////////////// COLOR GENERATION
 
     if ((draggable.length%2)=== 0){
             for(var i = 1; i < ((draggable.length)/2)+1; i++) {
-                console.log("IsGOOD")
-
-                green_val[i] = 150 * ((1/(draggable.length/2))*i);
-                //console.log(green_val[i]+"I LOOP"+i)
+                green_val[i] = 130 * ((1/(draggable.length/2))*i);
             }
             for(var j = (draggable.length/2); j > 0; j--) {
-                console.log("IsGOOD2")
-
-                red_val[j]=150 * ((1/(draggable.length/2))*j);
-                //console.log(red_val[j]+"J LOOP"+j)
+                red_val[j]=130 * ((1/(draggable.length/2))*j);
             }
             
-
-            for(var i = 0; i < ((draggable.length)/2)+1; i++) {
-                for(var j = (draggable.length/2); j > 0; j--) {
-                    if(j>=1 && !done_j){
-                        combine[[0][j]]=Math.round(red_val[j]);
-                        console.log(Math.round(red_val[j])+"LOOOOOOOOOOOOOOOOOOOOOOOP"+j)
-                        if(j==1){done_j = 1;}
-                    }else{
-                        if(red_val[j]==255){
-                            combine[[1][i]]=Math.round(green_val[i]);
-                            console.log(Math.round(green_val[i])+"LOOOOOOOOOOOOOOOOOOOOOOOP"+i)
-                        }
-
-                    }
-
-                }              
-            }
           }else{
-            console.log("IsNOTGOOD")
 
+            for(var i = 1; i < ((draggable.length)/2)+1; i++) {
+                green_val[i] = Math.ceil(130 * ((1/(draggable.length/2))*i));
+                console.log(green_val[i]+" I LOOP "+i);
+            }
+            for(var j = Math.ceil((draggable.length/2)-1); j > 0; j--) {
+                red_val[j]=Math.ceil(130 * ((1/(draggable.length/2))*j));
+            }
             green_val[i] = 255 / (draggable.length-1);
             red_val[i]=255 / (draggable.length-1);
           }
 
-
+////////////////////////////////////////////// COLOR ASSIGNMENT TO BACKGROUND OF TIER LEVELS
 
 for(var i = 0; i < draggable.length; i++) {
 
-          draggable[ i ].style.setProperty("--pseudo-text", `"${i+1}"`);
-        
-            if(i<(draggable.length/2)){
-                console.log(i+"test"+Math.round(green_val[i+1]));
-                draggable[i].style.setProperty("background-color", `rgb(0,${Math.round(green_val[(draggable.length/2)-i])},0)`);
+    draggable[ i ].style.setProperty("--pseudo-text", `"${i+1}"`);
+    
+    if(draggable.length%2===0){
+        if(i<(draggable.length/2)){
+                // console.log(i+"TEST TO CSS LOOP 1 "+Math.round(green_val[(draggable.length/2)-i]));
+                draggable[i].style.setProperty("background-color", `rgb(20,${Math.round(green_val[(draggable.length/2)-i])},20)`);
             }else{
-                console.log(i+"test"+Math.round(green_val[i-7]));
-                draggable[i].style.setProperty("background-color", `rgb(${Math.round(red_val[i-7])},0,0)`);
+                // console.log(i+"TEST TO CSS"+Math.round(Math.round(red_val[i-(green_val.length-2)])));
+                draggable[i].style.setProperty("background-color", `rgb(${Math.round(red_val[i-(green_val.length-2)])},20,20)`);
             }
+    }else{
+        if(i<(draggable.length/2)){
+                // console.log(i+" TEST TO CSS LOOP 1 "+green_val[Math.floor(draggable.length/2)-(i-1)]);
+                draggable[i].style.setProperty("background-color", `rgb(20,${green_val[Math.floor(draggable.length/2)-(i-1)]},20)`);
+            }else{
+                // console.log(i+" TEST TO CSS "+red_val[i-(green_val.length-3)]);
+                draggable[i].style.setProperty("background-color", `rgb(${red_val[i-(green_val.length-3)]},20,20)`);
+            }
+    }
+
           
+
+/////////////////////////////////////////////DRAG
 
 
     boundingclient.push(draggable[i].getBoundingClientRect());
