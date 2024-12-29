@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body class="body">
     <!-- <form method="post" enctype="multipart/form-data" action="http://localhost:5000/img/upload">
@@ -108,22 +108,22 @@
         </div>
         <div class="template_board">
             <h3>Tiers</h3>
-            <div class="template_board_tiers" ondrop="" ondragover="allowDrop(this)">
-                <h5 draggable="true" ondrag="move(this,0)" class="drag">Best</h5>
-                <h5 draggable="true" ondrag="move(this,1)" class="drag">Good</h5>
-                <h5 draggable="true" ondrag="move(this,2)" class="drag">Average</h5>
-                <h5 draggable="true" ondrag="move(this,3)" class="drag">Bad</h5>
-                <h5 draggable="true" ondrag="move(this,4)" class="drag">Worst</h5>
-                <h5 draggable="true" ondrag="move(this,5)" class="drag">Best</h5>
-                <h5 draggable="true" ondrag="move(this,6)" class="drag">Good</h5>
-                <h5 draggable="true" ondrag="move(this,7)" class="drag">Average</h5>
-                <h5 draggable="true" ondrag="move(this,8)" class="drag">Bad</h5>
-                <h5 draggable="true" ondrag="move(this,9)" class="drag">Worst</h5>
-                <h5 draggable="true" ondrag="move(this,10)" class="drag">Best</h5>
-                <h5 draggable="true" ondrag="move(this,11)" class="drag">Good</h5>
-                <h5 draggable="true" ondrag="move(this,12)" class="drag">Average</h5>
-                <h5 draggable="true" ondrag="move(this,13)" class="drag">Bad</h5>
-                <h5 draggable="true" ondrag="move(this,14)" class="drag">Worst</h5>
+            <div class="template_board_tiers">
+                <h5 class="drag">Best</h5>
+                <h5 class="drag">Good</h5>
+                <h5 class="drag">Average</h5>
+                <h5 class="drag">Bad</h5>
+                <h5 class="drag">Worst</h5>
+                <h5 class="drag">Best</h5>
+                <h5 class="drag">Good</h5>
+                <h5 class="drag">Average</h5>
+                <h5 class="drag">Bad</h5>
+                <h5 class="drag">Worst</h5>
+                <h5 class="drag">Best</h5>
+                <h5 class="drag">Good</h5>
+                <h5 class="drag">Average</h5>
+                <h5 class="drag">Bad</h5>
+                <h5 class="drag">Worst</h5>
             </div>
             <img class="tier_plus_icon pointer" src="./icons/plus-icon.svg" alt="">
             <h3>Images</h3>
@@ -202,7 +202,7 @@ document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-ar
     var tier_box_rect = temp_board_tiers_box_box[0].getBoundingClientRect();
 
 
-var boundingclient = [];
+
 var green_val = [];
 var red_val = [];
 var done_j = 0;
@@ -231,7 +231,11 @@ var done_j = 0;
           }
 
 ////////////////////////////////////////////// COLOR ASSIGNMENT TO BACKGROUND OF TIER LEVELS
-
+var boundingclient_arr=[];
+var dragging_elm = '';
+var top_old='';
+var left_old='';
+var id_list=[];
 for(var i = 0; i < draggable.length; i++) {
 
     draggable[ i ].style.setProperty("--pseudo-text", `"${i+1}"`);
@@ -258,77 +262,74 @@ for(var i = 0; i < draggable.length; i++) {
 
 /////////////////////////////////////////////DRAG
 
+    boundingclient_arr.push(draggable[i].getBoundingClientRect());
 
-    boundingclient.push(draggable[i].getBoundingClientRect());
 
-    draggable[i].addEventListener('mouseover', () => {
+    draggable[i].addEventListener('mousemove', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
+        move(elm.target,dragging_elm)
+        console.log(dragging_elm);
     });
-    draggable[i].addEventListener('mousedown', () => {
+    draggable[i].addEventListener('mousedown', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-grab-icon.svg'), auto";
+        elm.target.setAttribute("id", "moving");
+        for(var i = 0; i < draggable.length; i++) {
+            id_list[i] = draggable[i].getAttribute("id");
+            console.log(draggable[i].getAttribute("id"));
+        }
+
+
+        dragging_elm = id_list.findIndex((x) => x === 'moving');
+
     });
-    draggable[i].addEventListener('mouseup', () => {
+    draggable[i].addEventListener('mouseover', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
+        elm.target.style.pointerEvents = 'all';
+
+
     });
-    draggable[i].addEventListener('mouseleave', () => {
+    draggable[i].addEventListener('mouseup', (elm) => {
+        document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
+        elm.target.removeAttribute("id", "moving");
+        elm.target.style.zIndex='0';
+        elm.target.style.pointerEvents = 'stroke';
+        top_old = event.clientY - boundingclient.y -(boundingclient.height/2);
+        left_old = event.clientX - boundingclient.x - (tier_box_rect.x - main_rect.x);
+        console.log(top_old);
+        console.log(left_old);
+        draggable = document.getElementsByClassName("drag");
+        
+    });
+    draggable[i].addEventListener('mouseleave', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
+        elm.target.removeAttribute("id", "moving");
+        elm.target.style.zIndex='0';
+        elm.target.style.pointerEvents = 'stroke';
     });
+
     draggable[i].addEventListener("dragstart", function(e) {
-    var img = document.createElement("img");
-    img.src = "";
-    e.dataTransfer.setDragImage(img, 0, 0);
-    document.body.style.cursor = 'none';
-}, false);
+        document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-grab-icon.svg'), auto";
+        var img = document.createElement("img");
+        img.src = "";
+        e.dataTransfer.setDragImage(img, 0, 0);
+    }, false);
 };
 
-// for(var i = 0; i < boundingclient.length; i++) {
-//     tier_level_move_arr[i] = draggable[i].getBoundingClientRect();
-// };
-var tier_level_move_arr =[];
 
-function getlevelboxes(){
-    for(var k = 0; k < boundingclient.length; k++) {
-        draggable[k].addEventListener('mousemove', () => {
-            // console.log(boundingclient[k]);
-        });
-    };
-}
-var intervalId;
+
 function move(element,i) {
 
-    element.style.top = event.clientY -boundingclient[i].y -(boundingclient[i].height/2) +"px";
-    element.style.left =event.clientX -boundingclient[i].x - (tier_box_rect.x - main_rect.x) +"px";
+    if(document.getElementById('moving')){
+            document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-grab-icon.svg'), auto";
+            element.style.top = event.clientY - boundingclient_arr[i].y -(boundingclient_arr[i].height/2) +"px";
+            element.style.left = event.clientX - boundingclient_arr[i].x - (tier_box_rect.x - main_rect.x) +"px";
+            element.style.zIndex='2';
+        }
+        // console.log(`${event.clientY} - ${boundingclient.y} -(${boundingclient.height}/2)`);
+        // console.log(`${event.clientX} - ${boundingclient.x} - (${tier_box_rect.x} - ${main_rect.x})`);
+        // console.log(boundingclient);
 
-    // console.log(boundingclient[i].left+ " SELECT");
-    // console.log(boundingclient[i-1].left);
-    // console.log(parseInt(boundingclient[i].width));
-    var px_pos = element.style.left.search("px")
-    // console.log(parseInt(element.style.left.substring(px_pos,1)));
-    // console.log(element.style.left+"REAL");
 
-    var elm_width = 105
-    // console.log(boundingclient[i]);
-    var index_of_elm_under= boundingclient.findIndex( s => s.width >= 105 )
-    console.log(index_of_elm_under);
-    console.log(draggable[0]);
-    if(parseInt(element.style.left.substring(px_pos,1))>parseInt(boundingclient[i].width)){
-        draggable[i-1].style.transform = "translate(50%,0)";
-        // console.log("TRIGGER")
-    }
-
-    if (intervalId){
-        return 0;
-    }
-    intervalId = setInterval(getlevelboxes(),1000);
-        
-}
-function allowDrop(element) {
-    event.preventDefault();
-}
-function drop(element){
-    event.preventDefault();
-    var data = event.dataTransfer.getData("text");
-    event.target.appendChild(document.getElementById(data));
 }
 
 //  ##############################HOVER
