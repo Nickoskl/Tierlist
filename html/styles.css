@@ -79,7 +79,6 @@ textarea:not([rows]) {
   --pseudo-text: "just some text";
   }
 
-
 body{
     background:#31363f;
     background:url('./imgs/c2c9362d-eb52-47ce-a0df-ae58b0e40ae3.png') no-repeat;
@@ -367,7 +366,7 @@ footer{
   border-radius:10px;
   user-drag:none;
   user-select:none;
-  transition:opacity 0.3s, transform 0.3s;
+  transition:opacity 0.3s, transform 0.3s, margin 0.3s;
   pointer-events:stroke;
 }
 
