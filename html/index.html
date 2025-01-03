@@ -244,9 +244,12 @@ document.addEventListener("scroll", (event) => {
 
 ////////////////////////////////////////////// COLOR ASSIGNMENT TO BACKGROUND OF TIER LEVELS
 var boundingclient_arr=[];
-var dragging_elm = '';
+var dropto=-1;
+var dragging_elm = -1;
 var top_old='';
 var left_old='';
+var elm_matrix=[];
+var init_transf=0;
 var tier_level_rows=[];
 var id_list=[];
 for(var i = 0; i < draggable.length; i++) {
@@ -315,8 +318,6 @@ for(var i = 0; i < draggable.length; i++) {
 
 
         dragging_elm = id_list.findIndex((x) => x === 'moving');
-        elm.target.style.marginRight=`-${boundingclient_arr[dragging_elm].width/2}px`;
-        upd_bound()
 
     });
     draggable[i].addEventListener('mouseover', (elm) => {
@@ -328,12 +329,12 @@ for(var i = 0; i < draggable.length; i++) {
     draggable[i].addEventListener('mouseup', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
         elm.target.removeAttribute("id", "moving");
-        dragging_elm=null;
+        dragging_elm=-1;
         elm.target.style.zIndex='0';
         elm.target.style.transform='scale(1)';
         elm.target.style.pointerEvents = 'stroke';
         draggable = document.getElementsByClassName("drag");
-
+        init_transf=0;
         
     });
     draggable[i].addEventListener('mouseleave', (elm) => {
@@ -366,16 +367,52 @@ function move(element,i) {
 
 function dragoveranim(bounding_arr,i){
     // bounding_arr[i] = draggable[i].getBoundingClientRect();
+
+    // if(draggable[i+1]){
+    //     draggable[i+1].style.transform="translateX(-30px)";
+    // }
+    // if(draggable[i-1]){
+    //     draggable[i-1].style.transform="translateX(30px)";
+    // }
+
+if(!init_transf){
+    init_transf=50;
     for(var j = 0; j < draggable.length; j++) {
-        if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-            if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
-                draggable[j].style.transform="translate(100px,0)";
-                draggable[i].style.transform='scale(0.9)';
-                console.log(bounding_arr);
+        if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
+            if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+                draggable[j].style.transform=`translateX(-${init_transf}px)`;
+            }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+                draggable[j].style.transform=`translateX(${init_transf}px)`;
             }else{
-                draggable[j].style.transform="translate(0,0)";
+
             }
         }
+        elm_matrix.push(new WebKitCSSMatrix(window.getComputedStyle(draggable[j]).transform).m41);
+        // console.log(new WebKitCSSMatrix(window.getComputedStyle(draggable[j]).transform));
+    }    
+
+}
+// console.log(-50+10);
+
+    
+    for(var j = 0; j < draggable.length; j++) {
+        // console.log('translateX: ', matrix.m41);
+        if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
+            if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+                // if(dropto==-1){dropto=j;console.log(dropto+"DROPTO");}else{}
+                draggable[j].style.transform=`translateX(${elm_matrix[j]+150}px)`;
+
+            }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+                draggable[j].style.transform=`translateX(${elm_matrix[j]-150}px)`;
+                dropto=-1;
+            }else{
+
+            }
+            draggable[i].style.transform='scale(0.9)';
+        }else{
+            draggable[j].style.transform=`translateX(${init_transf})`;
+                // draggable[j].removeAttribute("id", "tome");
+            }
     }
 }
 //  ##############################HOVER
