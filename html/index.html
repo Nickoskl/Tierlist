@@ -376,43 +376,62 @@ function dragoveranim(bounding_arr,i){
     // }
 
 if(!init_transf){
-    init_transf=50;
+    init_transf=bounding_arr[i].width/2;
     for(var j = 0; j < draggable.length; j++) {
         if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
+            
             if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
                 draggable[j].style.transform=`translateX(-${init_transf}px)`;
+                elm_matrix[j]=`-${init_transf}`;
+                // console.log(j+"initTRANSF ITER -"+init_transf);
             }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
                 draggable[j].style.transform=`translateX(${init_transf}px)`;
+                elm_matrix[j]=`${init_transf}`;
+                // console.log(j+"initTRANSF ITER "+init_transf);
             }else{
-
+                elm_matrix[j]=0;
+                // console.log(j+"initTRANSF ITER");
             }
+        }else{
+            elm_matrix[j]=0;
         }
-        elm_matrix.push(new WebKitCSSMatrix(window.getComputedStyle(draggable[j]).transform).m41);
-        // console.log(new WebKitCSSMatrix(window.getComputedStyle(draggable[j]).transform));
+        
+        // console.log(elm_matrix[j]);
     }    
 
 }
-// console.log(-50+10);
 
     
     for(var j = 0; j < draggable.length; j++) {
-        // console.log('translateX: ', matrix.m41);
         if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
             if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
                 // if(dropto==-1){dropto=j;console.log(dropto+"DROPTO");}else{}
-                draggable[j].style.transform=`translateX(${elm_matrix[j]+150}px)`;
+                draggable[j].style.transform=`translateX(${parseInt(elm_matrix[j])+20}px)`;
+                // console.log(elm_matrix[j]);
 
             }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-                draggable[j].style.transform=`translateX(${elm_matrix[j]-150}px)`;
-                dropto=-1;
+                draggable[j].style.transform=`translateX(${parseInt(elm_matrix[j])-20}px)`;
+                // console.log(elm_matrix[j]);
+                // dropto=-1;
             }else{
-
+                
+                
             }
             draggable[i].style.transform='scale(0.9)';
         }else{
-            draggable[j].style.transform=`translateX(${init_transf})`;
-                // draggable[j].removeAttribute("id", "tome");
+
+            if(j<i){
+                draggable[j].style.transform=`translateX(${elm_matrix[j]}px)`;
+            }else if(j>i){
+                draggable[j].style.transform=`translateX(${elm_matrix[j]}px)`;
+            }else{
+
+                
+
             }
+            
+            }
+            
     }
 }
 //  ##############################HOVER
