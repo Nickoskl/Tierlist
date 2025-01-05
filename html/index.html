@@ -335,7 +335,7 @@ for(var i = 0; i < draggable.length; i++) {
         elm.target.style.pointerEvents = 'stroke';
         draggable = document.getElementsByClassName("drag");
         init_transf=0;
-        
+        dropto=-1;        
     });
     draggable[i].addEventListener('mouseleave', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
@@ -366,20 +366,12 @@ function move(element,i) {
 }
 
 function dragoveranim(bounding_arr,i){
-    // bounding_arr[i] = draggable[i].getBoundingClientRect();
 
-    // if(draggable[i+1]){
-    //     draggable[i+1].style.transform="translateX(-30px)";
-    // }
-    // if(draggable[i-1]){
-    //     draggable[i-1].style.transform="translateX(30px)";
-    // }
 
 if(!init_transf){
     init_transf=bounding_arr[i].width/2;
     for(var j = 0; j < draggable.length; j++) {
         if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
-            
             if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
                 draggable[j].style.transform=`translateX(-${init_transf}px)`;
                 elm_matrix[j]=`-${init_transf}`;
@@ -401,38 +393,47 @@ if(!init_transf){
 
 }
 
-    
+var temp_dropto = -1
+
     for(var j = 0; j < draggable.length; j++) {
         if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
             if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-                // if(dropto==-1){dropto=j;console.log(dropto+"DROPTO");}else{}
+                if(dropto<j && dropto==-1){
+                    dropto=j-1;
+                }
+                // console.log(j);
                 draggable[j].style.transform=`translateX(${parseInt(elm_matrix[j])+20}px)`;
-                // console.log(elm_matrix[j]);
-
             }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+                if(j<i){
+                        dropto=j+1;
+                    }else{                        
+                        dropto=j;
+                    }
+                    
                 draggable[j].style.transform=`translateX(${parseInt(elm_matrix[j])-20}px)`;
-                // console.log(elm_matrix[j]);
-                // dropto=-1;
+                // console.log(j);
             }else{
-                
-                
+                console.log("BREAK");
+                if(j==0){dropto=j}
             }
+            
             draggable[i].style.transform='scale(0.9)';
         }else{
-
-            if(j<i){
-                draggable[j].style.transform=`translateX(${elm_matrix[j]}px)`;
-            }else if(j>i){
-                draggable[j].style.transform=`translateX(${elm_matrix[j]}px)`;
-            }else{
-
-                
-
-            }
+            // dropto= dropto-1;
+                if(j<i){
+                    draggable[j].style.transform=`translateX(${elm_matrix[j]}px)`;
+                }else if(j>i){
+                    draggable[j].style.transform=`translateX(${elm_matrix[j]}px)`;
+                }else{
+                    
+                }
             
             }
-            
+        // console.log(dropto);
     }
+    console.log(dropto);
+    dropto=-1
+
 }
 //  ##############################HOVER
 
