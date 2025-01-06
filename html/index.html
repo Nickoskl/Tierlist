@@ -189,23 +189,19 @@
     </footer>
     <script>
 
+
 document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
 
- var clickable = document.getElementsByClassName("pointer");
- var draggable = document.getElementsByClassName("drag");
- 
-    const body_box = document.getElementsByClassName("body");
-    const main_box = document.getElementsByClassName("main");
-    const temp_board_tiers_box_box = document.getElementsByClassName("template_board_tiers");
+    var clickable = document.getElementsByClassName("pointer");
+    var draggable = document.getElementsByClassName("drag");
+    var body_box = document.getElementsByClassName("body");
+    var main_box = document.getElementsByClassName("main");
+    var temp_board_tiers_box_box = document.getElementsByClassName("template_board_tiers");
     var main_rect = main_box[1].getBoundingClientRect();//##########TOCHANGELAITER
     var body_rect = body_box[0].getBoundingClientRect();
     var tier_box_rect = temp_board_tiers_box_box[0].getBoundingClientRect();
 
 
-
-var green_val = [];
-var red_val = [];
-var done_j = 0;
 
 
 ////////////////////////////////////////////// BOUNDING BOX UPDATE WITH SCROLL
@@ -214,46 +210,64 @@ var done_j = 0;
 document.addEventListener("scroll", (event) => {
     lastKnownScrollPosition = window.scrollY;
     // console.log(lastKnownScrollPosition);
-    setTimeout(upd_bound(), 100);
+    setTimeout(upd_ELM(), 100);
     });
 
 
 
-////////////////////////////////////////////// COLOR GENERATION
 
-    if ((draggable.length%2)=== 0){
-            for(var i = 1; i < ((draggable.length)/2)+1; i++) {
-                green_val[i] = 130 * ((1/(draggable.length/2))*i);
-            }
-            for(var j = (draggable.length/2); j > 0; j--) {
-                red_val[j]=130 * ((1/(draggable.length/2))*j);
-            }
-            
-          }else{
 
-            for(var i = 1; i < ((draggable.length)/2)+1; i++) {
-                green_val[i] = Math.ceil(130 * ((1/(draggable.length/2))*i));
-                console.log(green_val[i]+" I LOOP "+i);
-            }
-            for(var j = Math.ceil((draggable.length/2)-1); j > 0; j--) {
-                red_val[j]=Math.ceil(130 * ((1/(draggable.length/2))*j));
-            }
-            green_val[i] = 255 / (draggable.length-1);
-            red_val[i]=255 / (draggable.length-1);
-          }
 
-////////////////////////////////////////////// COLOR ASSIGNMENT TO BACKGROUND OF TIER LEVELS
+
+
+var green_val = [];
+var red_val = [];
+var done_j = 0;
 var boundingclient_arr=[];
 var dropto=-1;
 var dragging_elm = -1;
 var top_old='';
 var left_old='';
+var drop_pos='';
 var elm_matrix=[];
 var init_transf=0;
+var dropped_shadow=0;
 var tier_level_rows=[];
+var svg_insert='';
 var id_list=[];
-for(var i = 0; i < draggable.length; i++) {
+BG_coloring();
+eventListenerInit();
 
+
+
+
+
+
+////////////////////////////////////////////// COLOR GENERATION
+function BG_coloring(){
+
+if ((draggable.length%2)=== 0){
+        for(var i = 1; i < ((draggable.length)/2)+1; i++) {
+            green_val[i] = 130 * ((1/(draggable.length/2))*i);
+        }
+        for(var j = (draggable.length/2); j > 0; j--) {
+            red_val[j]=130 * ((1/(draggable.length/2))*j);
+        }
+        
+      }else{
+
+        for(var i = 1; i < ((draggable.length)/2)+1; i++) {
+            green_val[i] = Math.ceil(130 * ((1/(draggable.length/2))*i));
+            console.log(green_val[i]+" I LOOP "+i);
+        }
+        for(var j = Math.ceil((draggable.length/2)-1); j > 0; j--) {
+            red_val[j]=Math.ceil(130 * ((1/(draggable.length/2))*j));
+        }
+        green_val[i] = 255 / (draggable.length-1);
+        red_val[i]=255 / (draggable.length-1);
+      }
+///////////////////// COLOR ASSIGNMENT TO BACKGROUND OF TIER LEVELS
+for(var i = 0; i < draggable.length; i++) {
     draggable[ i ].style.setProperty("--pseudo-text", `"${i+1}"`);
     
     if(draggable.length%2===0){
@@ -273,14 +287,16 @@ for(var i = 0; i < draggable.length; i++) {
                 draggable[i].style.setProperty("background-color", `rgb(${red_val[i-(green_val.length-3)]},20,20)`);
             }
     }
+}
+
+}
 
 
-
-
-
+function eventListenerInit(){
+    for(var i = 0; i < draggable.length; i++) {
 /////////////////////////////////////////////DRAG
 
-    boundingclient_arr.push(draggable[i].getBoundingClientRect());
+    boundingclient_arr[i] = draggable[i].getBoundingClientRect();
 
     /////////////////////// TIER LEVEL ROW CALC
     
@@ -300,9 +316,6 @@ for(var i = 0; i < draggable.length; i++) {
         if(dragging_elm>=0){
             move(elm.target,dragging_elm);
             dragoveranim(boundingclient_arr,dragging_elm);
-            // console.log(boundingclient_arr[dragging_elm]);
-            // console.log(dragging_elm);
-            // console.log(boundingclient_arr)
         }
 
     });
@@ -313,7 +326,6 @@ for(var i = 0; i < draggable.length; i++) {
         elm.target.style.zIndex='2';
         for(var i = 0; i < draggable.length; i++) {
             id_list[i] = draggable[i].getAttribute("id");
-            // console.log(draggable[i].getAttribute("id"));
         }
 
 
@@ -328,14 +340,10 @@ for(var i = 0; i < draggable.length; i++) {
     });
     draggable[i].addEventListener('mouseup', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
+        drop();
+        upd_ELM();
         elm.target.removeAttribute("id", "moving");
-        dragging_elm=-1;
-        elm.target.style.zIndex='0';
-        elm.target.style.transform='scale(1)';
-        elm.target.style.pointerEvents = 'stroke';
-        draggable = document.getElementsByClassName("drag");
-        init_transf=0;
-        dropto=-1;        
+
     });
     draggable[i].addEventListener('mouseleave', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
@@ -348,11 +356,50 @@ for(var i = 0; i < draggable.length; i++) {
         e.dataTransfer.setDragImage(img, 0, 0);
     }, false);
 };
+}
 
-function upd_bound(){
+function upd_ELM(){
+
+    document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
+
+    clickable = document.getElementsByClassName("pointer");
+    draggable = document.getElementsByClassName("drag");
+
+    body_box = document.getElementsByClassName("body");
+    main_box = document.getElementsByClassName("main");
+    temp_board_tiers_box_box = document.getElementsByClassName("template_board_tiers");
+    main_rect = main_box[1].getBoundingClientRect();//##########TOCHANGELAITER
+    body_rect = body_box[0].getBoundingClientRect();
+    tier_box_rect = temp_board_tiers_box_box[0].getBoundingClientRect();
+
+
+    green_val = [];
+    red_val = [];
+    done_j = 0;
+    boundingclient_arr=[];
+    dropto=-1;
+    dragging_elm = -1;
+    top_old='';
+    left_old='';
+    drop_pos='';
+    elm_matrix=[];
+    init_transf=0;
+    dropped_shadow=0;
+    tier_level_rows=[];
+    svg_insert='';
+    id_list=[];
+
+   
+
     for(var i = 0; i < draggable.length; i++) {
         boundingclient_arr[i] = draggable[i].getBoundingClientRect();
+        draggable[i].style.zIndex='0';
+        draggable[i].style.transform='scale(1)';
+        draggable[i].style.pointerEvents = 'stroke';   
     }
+
+    BG_coloring();
+    eventListenerInit();
 }
 
 function move(element,i) {
@@ -375,33 +422,26 @@ if(!init_transf){
             if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
                 draggable[j].style.transform=`translateX(-${init_transf}px)`;
                 elm_matrix[j]=`-${init_transf}`;
-                // console.log(j+"initTRANSF ITER -"+init_transf);
             }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
                 draggable[j].style.transform=`translateX(${init_transf}px)`;
                 elm_matrix[j]=`${init_transf}`;
-                // console.log(j+"initTRANSF ITER "+init_transf);
             }else{
                 elm_matrix[j]=0;
-                // console.log(j+"initTRANSF ITER");
             }
         }else{
             elm_matrix[j]=0;
         }
-        
-        // console.log(elm_matrix[j]);
     }    
 
 }
 
-var temp_dropto = -1
 
     for(var j = 0; j < draggable.length; j++) {
         if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
             if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-                if(dropto<j && dropto==-1){
+                if(dropto==-1){
                     dropto=j-1;
                 }
-                // console.log(j);
                 draggable[j].style.transform=`translateX(${parseInt(elm_matrix[j])+20}px)`;
             }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
                 if(j<i){
@@ -411,15 +451,12 @@ var temp_dropto = -1
                     }
                     
                 draggable[j].style.transform=`translateX(${parseInt(elm_matrix[j])-20}px)`;
-                // console.log(j);
             }else{
-                console.log("BREAK");
                 if(j==0){dropto=j}
             }
             
             draggable[i].style.transform='scale(0.9)';
         }else{
-            // dropto= dropto-1;
                 if(j<i){
                     draggable[j].style.transform=`translateX(${elm_matrix[j]}px)`;
                 }else if(j>i){
@@ -429,10 +466,30 @@ var temp_dropto = -1
                 }
             
             }
-        // console.log(dropto);
+        
     }
-    console.log(dropto);
-    dropto=-1
+    drop_pos = dropto;
+    dropto=-1;
+    console.log(drop_pos);
+
+}
+
+function drop(){
+    console.log("CALLED");
+    if(drop_pos!=-1){
+        // arr.splice(2, 0, "Lene");
+        // temp_board_tiers_box_box[0].insertBefore(draggable[dragging_elm], temp_board_tiers_box_box[0].childNodes[(drop_pos*2)+2]);
+
+        if(draggable[dragging_elm]){
+            draggable[dragging_elm].remove();
+        }
+
+
+        console.log(draggable[dragging_elm])
+        for(var j = 0; j < draggable.length; j++) {
+            draggable[j].style.transform=`translateX(0)`;
+        }
+    }
 
 }
 //  ##############################HOVER
