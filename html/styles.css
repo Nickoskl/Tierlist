@@ -40,7 +40,7 @@ button, input, label {
 
 /* Balance text wrapping on headings */
 h1, h2,
-h3, h4 {
+h3, h4, h5 {
   text-wrap: balance;
 }
 
@@ -365,8 +365,10 @@ footer{
   position:relative;
   border-radius:10px;
   user-drag:none;
+  top:0;
+  left:0;
   user-select:none;
-  transition:opacity 0.3s, transform 0.3s, margin 0.3s;
+  transition:opacity 0.3s, left 0.3s, top 0.3s;
   pointer-events:stroke;
 }
 

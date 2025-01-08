@@ -214,7 +214,10 @@ document.addEventListener("scroll", (event) => {
     });
 
 
-
+    // document.addEventListener('mousemove', (elm) => {
+    //     console.log(event.clientX+"   CLIENT X");
+    //     console.log(event.clientY+"   CLIENT Y");
+    // });
 
 
 
@@ -228,13 +231,16 @@ var dropto=-1;
 var dragging_elm = -1;
 var top_old='';
 var left_old='';
-var drop_pos='';
+var drop_pos=-1;
 var elm_matrix=[];
 var init_transf=0;
 var dropped_shadow=0;
 var tier_level_rows=[];
 var svg_insert='';
 var id_list=[];
+var rebound_arr=0;
+var pointer_start_x='';
+var pointer_start_y='';
 BG_coloring();
 eventListenerInit();
 
@@ -258,7 +264,7 @@ if ((draggable.length%2)=== 0){
 
         for(var i = 1; i < ((draggable.length)/2)+1; i++) {
             green_val[i] = Math.ceil(130 * ((1/(draggable.length/2))*i));
-            console.log(green_val[i]+" I LOOP "+i);
+            // console.log(green_val[i]+" I LOOP "+i);
         }
         for(var j = Math.ceil((draggable.length/2)-1); j > 0; j--) {
             red_val[j]=Math.ceil(130 * ((1/(draggable.length/2))*j));
@@ -270,23 +276,23 @@ if ((draggable.length%2)=== 0){
 for(var i = 0; i < draggable.length; i++) {
     draggable[ i ].style.setProperty("--pseudo-text", `"${i+1}"`);
     
-    if(draggable.length%2===0){
-        if(i<(draggable.length/2)){
-                // console.log(i+"TEST TO CSS LOOP 1 "+Math.round(green_val[(draggable.length/2)-i]));
-                draggable[i].style.setProperty("background-color", `rgb(20,${Math.round(green_val[(draggable.length/2)-i])},20)`);
-            }else{
-                // console.log(i+"TEST TO CSS"+Math.round(Math.round(red_val[i-(green_val.length-2)])));
-                draggable[i].style.setProperty("background-color", `rgb(${Math.round(red_val[i-(green_val.length-2)])},20,20)`);
-            }
-    }else{
-        if(i<(draggable.length/2)){
-                // console.log(i+" TEST TO CSS LOOP 1 "+green_val[Math.floor(draggable.length/2)-(i-1)]);
-                draggable[i].style.setProperty("background-color", `rgb(20,${green_val[Math.floor(draggable.length/2)-(i-1)]},20)`);
-            }else{
-                // console.log(i+" TEST TO CSS "+red_val[i-(green_val.length-3)]);
-                draggable[i].style.setProperty("background-color", `rgb(${red_val[i-(green_val.length-3)]},20,20)`);
-            }
-    }
+    // if(draggable.length%2===0){
+    //     if(i<(draggable.length/2)){
+    //             // console.log(i+"TEST TO CSS LOOP 1 "+Math.round(green_val[(draggable.length/2)-i]));
+    //             draggable[i].style.setProperty("background-color", `rgb(20,${Math.round(green_val[(draggable.length/2)-i])},20)`);
+    //         }else{
+    //             // console.log(i+"TEST TO CSS"+Math.round(Math.round(red_val[i-(green_val.length-2)])));
+    //             draggable[i].style.setProperty("background-color", `rgb(${Math.round(red_val[i-(green_val.length-2)])},20,20)`);
+    //         }
+    // }else{
+    //     if(i<(draggable.length/2)){
+    //             // console.log(i+" TEST TO CSS LOOP 1 "+green_val[Math.floor(draggable.length/2)-(i-1)]);
+    //             draggable[i].style.setProperty("background-color", `rgb(20,${green_val[Math.floor(draggable.length/2)-(i-1)]},20)`);
+    //         }else{
+    //             // console.log(i+" TEST TO CSS "+red_val[i-(green_val.length-3)]);
+    //             draggable[i].style.setProperty("background-color", `rgb(${red_val[i-(green_val.length-3)]},20,20)`);
+    //         }
+    // }
 }
 
 }
@@ -304,7 +310,7 @@ function eventListenerInit(){
         tier_level_rows.push(boundingclient_arr[i].y)
     }
 
-    console.log(tier_level_rows);
+    // console.log(tier_level_rows);
 
 
 
@@ -322,7 +328,9 @@ function eventListenerInit(){
     draggable[i].addEventListener('mousedown', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-grab-icon.svg'), auto";
         elm.target.setAttribute("id", "moving");
-        elm.target.style.transform='scale(1.2)';
+        pointer_start_x=event.clientX;
+        pointer_start_y=event.clientY;
+        // elm.target.style.transform='scale(1.2)';
         elm.target.style.zIndex='2';
         for(var i = 0; i < draggable.length; i++) {
             id_list[i] = draggable[i].getAttribute("id");
@@ -336,17 +344,72 @@ function eventListenerInit(){
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
         elm.target.style.pointerEvents = 'all';
 
-
     });
     draggable[i].addEventListener('mouseup', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
-        drop();
-        upd_ELM();
+        elm.target.style.transition = `opacity 0.3s, transform 0.3s, margin 0.3s, left 0.3s`;
+
+        if(drop_pos>=0){
+            
+        }else{
+            elm.target.style.transition = `all 0.3s`;
+            // elm.target.style.top =boundingclient_arr[i].y - tier_box_rect.y-main_rect.y-5 +"px";
+            // elm.target.style.left =boundingclient_arr[i].x - tier_box_rect.x-main_rect.x+5+"px";
+            
+            
+            var timer = setTimeout(
+                function(){
+
+                    elm.target.style.transition = `all 0.3s`;
+                    elm.target.style.top ="0px";
+                    elm.target.style.left ="0px";
+                    elm.target.style.position = `relative`;
+                    
+                    console.log("wewaEWe");
+                },300)
+                            
+
+
+        }
+        // if(drop_pos>=0){
+
+        //     console.log(boundingclient_arr[dragging_elm+1].width+10);
+
+
+        //     if(draggable[dragging_elm]){
+        //         draggable[dragging_elm].remove();
+        //     }
+
+
+        //     console.log(draggable[dragging_elm]);
+        //     for(var j = 0; j < draggable.length; j++) {
+        //         draggable[j].style.left=`0`;
+        //     }
+
+
+
+
+        //     var timer = setTimeout(
+        //         function(){
+                            
+
+        //             // drop();
+        //             elm.target.remove();
+        //             // upd_ELM();
+                    
+        //         },300);
+            
+        // }
+
+        
+
         elm.target.removeAttribute("id", "moving");
 
     });
     draggable[i].addEventListener('mouseleave', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
+        dragging_elm=-1
+        elm.target.removeAttribute("id", "moving");
     });
 
     draggable[i].addEventListener("dragstart", function(e) {
@@ -367,7 +430,7 @@ function upd_ELM(){
 
     body_box = document.getElementsByClassName("body");
     main_box = document.getElementsByClassName("main");
-    temp_board_tiers_box_box = document.getElementsByClassName("template_board_tiers");
+    temp_board_tiers_box_box = document.getElementsByClassName("template_board");
     main_rect = main_box[1].getBoundingClientRect();//##########TOCHANGELAITER
     body_rect = body_box[0].getBoundingClientRect();
     tier_box_rect = temp_board_tiers_box_box[0].getBoundingClientRect();
@@ -381,13 +444,14 @@ function upd_ELM(){
     dragging_elm = -1;
     top_old='';
     left_old='';
-    drop_pos='';
+    drop_pos=-1;
     elm_matrix=[];
     init_transf=0;
     dropped_shadow=0;
     tier_level_rows=[];
     svg_insert='';
     id_list=[];
+    rebound_arr=0;
 
    
 
@@ -405,9 +469,18 @@ function upd_ELM(){
 function move(element,i) {
 
     if(document.getElementById('moving')){
+        element.style.transition = `all 0s`;
+        element.style.position = `absolute`;
+        // element.style.top =boundingclient_arr[i].y - tier_box_rect.y-5 +"px";
+        // element.style.left =boundingclient_arr[i].x - tier_box_rect.x+5  +"px";
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-grab-icon.svg'), auto";
-        element.style.top = event.clientY - boundingclient_arr[i].y -(boundingclient_arr[i].height/2) +"px";
-        element.style.left = event.clientX - boundingclient_arr[i].x - (tier_box_rect.x - main_rect.x) +"px";
+        element.style.top =boundingclient_arr[i].y - tier_box_rect.y-5 +(event.clientY-pointer_start_y) +"px";
+        element.style.left =boundingclient_arr[i].x - tier_box_rect.x+5 +(event.clientX-pointer_start_x) +"px";
+
+        console.log(main_rect);
+        console.log(tier_box_rect);
+        console.log(boundingclient_arr[i-1]);
+        console.log(element.style.left)
     }
 
 }
@@ -415,79 +488,107 @@ function move(element,i) {
 function dragoveranim(bounding_arr,i){
 
 
-if(!init_transf){
-    init_transf=bounding_arr[i].width/2;
+    
     for(var j = 0; j < draggable.length; j++) {
-        if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
-            if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-                draggable[j].style.transform=`translateX(-${init_transf}px)`;
-                elm_matrix[j]=`-${init_transf}`;
-            }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-                draggable[j].style.transform=`translateX(${init_transf}px)`;
-                elm_matrix[j]=`${init_transf}`;
-            }else{
-                elm_matrix[j]=0;
-            }
+        if(j>i){
+            bounding_arr[j+1] = draggable[j].getBoundingClientRect();
+            
+        }else if(i==j){
+
         }else{
-            elm_matrix[j]=0;
+            bounding_arr[j] = draggable[j].getBoundingClientRect();
         }
-    }    
-
-}
-
-
-    for(var j = 0; j < draggable.length; j++) {
-        if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
-            if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-                if(dropto==-1){
-                    dropto=j-1;
-                }
-                draggable[j].style.transform=`translateX(${parseInt(elm_matrix[j])+20}px)`;
-            }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-                if(j<i){
-                        dropto=j+1;
-                    }else{                        
-                        dropto=j;
-                    }
-                    
-                draggable[j].style.transform=`translateX(${parseInt(elm_matrix[j])-20}px)`;
-            }else{
-                if(j==0){dropto=j}
-            }
-            
-            draggable[i].style.transform='scale(0.9)';
-        }else{
-                if(j<i){
-                    draggable[j].style.transform=`translateX(${elm_matrix[j]}px)`;
-                }else if(j>i){
-                    draggable[j].style.transform=`translateX(${elm_matrix[j]}px)`;
-                }else{
-                    
-                }
-            
-            }
-        
     }
-    drop_pos = dropto;
-    dropto=-1;
-    console.log(drop_pos);
+
+// console.log(bounding_arr[i])
+
+for(var j = 0; j < draggable.length+1; j++) {
+    if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
+        if(bounding_arr[j+1].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+                draggable[j].style.setProperty("background-color","blue");
+
+
+        }else if(bounding_arr[j+1].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+                draggable[j].style.setProperty("background-color","green");
+
+        }else{
+
+        }
+    }else{
+        // draggable[j-1].style.setProperty("background-color","red");
+    }
+}
+// if(!init_transf){
+//     console.log(bounding_arr[i]);
+//     init_transf=bounding_arr[i].width/2;
+//     for(var j = 0; j < draggable.length; j++) {
+//         if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
+//             if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+//                 draggable[j].style.left=`${init_transf}px`;
+//                 elm_matrix[j]=`-${init_transf}`;
+//             }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+//                 draggable[j].style.left=`-${init_transf}px`;
+//                 elm_matrix[j]=`${init_transf}`;
+//             }else{
+//                 elm_matrix[j]=0;
+//             }
+//         }else{
+//             elm_matrix[j]=0;
+//         }
+//     }    
+
+// }
+
+
+//     for(var j = 0; j < draggable.length; j++) {
+//         if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
+//             if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+//                 if(dropto==-1){
+//                     dropto=j-1;
+//                 }
+//                 // draggable[j].style.left=`${Math.ceil(elm_matrix[j])+20}px`;
+//                 draggable[j].style.left=`20px`;
+//             }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+//                 if(j<i){
+//                         dropto=j+1;
+//                     }else{                        
+//                         dropto=j;
+//                     }
+//                 draggable[j].style.left=`-20px`;
+//                 // draggable[j].style.left=`${Math.ceil(elm_matrix[j])-20}px`;
+//             }else{
+//                 if(j==0){dropto=j}
+//             }
+            
+//             draggable[i].style.transform='scale(0.9)';
+//         }else{
+//                 if(j<i){
+//                     // draggable[j].style.left=`${elm_matrix[j]}px`;
+//                 }else if(j>i){
+//                     // draggable[j].style.left=`${elm_matrix[j]}px`;
+//                 }else{
+                    
+//                 }
+            
+//             }
+        
+//     }
+//     drop_pos = dropto;
+//     dropto=-1;
+//     console.log(drop_pos);
 
 }
 
-function drop(){
-    console.log("CALLED");
+function drop(draggable,dragging_elm){
     if(drop_pos!=-1){
-        // arr.splice(2, 0, "Lene");
-        // temp_board_tiers_box_box[0].insertBefore(draggable[dragging_elm], temp_board_tiers_box_box[0].childNodes[(drop_pos*2)+2]);
-
         if(draggable[dragging_elm]){
             draggable[dragging_elm].remove();
         }
 
 
-        console.log(draggable[dragging_elm])
+        // console.log(draggable[dragging_elm]);
         for(var j = 0; j < draggable.length; j++) {
-            draggable[j].style.transform=`translateX(0)`;
+            draggable[j].style.left=`0`;
         }
     }
 
