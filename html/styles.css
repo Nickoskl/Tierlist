@@ -137,7 +137,6 @@ input:focus{
     display:inline-block;
     vertical-align: middle;
     padding:0 7%;
-    font-family: "Source Code Pro", serif;
     font-size:110%;
     font-weight:500;
     letter-spacing:1px;
@@ -149,7 +148,6 @@ input:focus{
     margin:0 auto;
     text-shadow:0 50px 100px rgba(0,0,0,0.5);
     border-radius:10px;
-    font-family: "Source Code Pro", serif;
     font-size:850%;
     color:#d0d0d2;
     font-weight: 800;
@@ -169,10 +167,10 @@ input:focus{
     padding:2%;
     margin-bottom:10%;
     background:#31363f;
+    font-family: "Source Code Pro", serif;
 }
 
 .basic_list{
-    font-family: "Source Code Pro", serif;
     color:#d0d0d2;
     justify-items:middle;
     justify-content:middle;
@@ -273,7 +271,6 @@ footer{
   color:#d0d0d2;
   font-size:20px;
   text-align:center;
-  font-family: "Source Code Pro", serif;
 }
 
 .admin_menu h3,.admin_menu h5{
@@ -315,7 +312,6 @@ footer{
   margin:0 auto;
   color:#d0d0d2;
   text-align:center;
-  font-family: "Source Code Pro", serif;
 }
 
 .template_action h3{
@@ -359,7 +355,6 @@ footer{
   margin:0 auto;
   color:#d0d0d2;
   text-align:center;
-  font-family: "Source Code Pro", serif;
   border-radius:10px;
   padding: 2%;
   font-size:20px;
@@ -501,7 +496,6 @@ footer{
   margin:0 auto;
   color:#d0d0d2;
   text-align:center;
-  font-family: "Source Code Pro", serif;
 }
 
 .tierlist_action h3{
@@ -561,7 +555,6 @@ footer{
 }
 
 .user_card{
-  font-family: "Source Code Pro", serif;
   width:90%;
   text-align:center;
   margin:1% auto;
@@ -621,4 +614,169 @@ footer{
 
   display:inline-block;
   vertical-align:middle;
+}
+
+.profile_title{
+  padding:2% 4%;
+  margin:0;
+  color:#d0d0d2;
+  font-size:30px;
+}
+
+.profile_card{
+  padding:6% 4%;
+  color:#d0d0d2;
+}
+
+.profile_img{
+  width:150px;
+  border-radius:100%;
+  vertical-align:top;
+  padding:2% 0;
+  display:inline-block;
+}
+
+.profile_info{
+  padding:0 2%;
+  display:inline-block;
+  width:35%;
+}
+
+.profile_info input{
+  width:100%;
+}
+
+.profile_btn{
+  width:100%;
+  display:inline-block;
+  background:#222831;
+  text-align:center;
+  padding:4% 2%;
+  margin:2% 0;
+  transition:all 0.3s;
+  border-radius:10px;
+}
+
+.profile_btn:hover{
+  color:#31363f;
+  background:#d0d0d2;
+  transition:all 0.3s;
+  transform:scale(1.1);
+}
+
+.profile_btn:hover > img{
+  filter:invert(100%);
+  transition:all 0.3s;
+}
+
+.profile_btn h5{
+  display:inline-block;
+  padding:5% 8%;
+  margin:0;
+}
+
+.profile_btn img{
+  width:30px;
+  vertical-align:middle;
+  display:inline-block;
+}
+
+.profile_sessions{
+  display:inline-block;
+  background:#222831;
+  width:40%;
+  padding:5% 3%;
+  border-radius:10px;
+  vertical-align:top;
+}
+
+.profile_sessions h5{
+  margin:0;
+  padding:3%;
+}
+
+.session_card{
+  margin: 2% 0;
+}
+
+.session_ip{
+  display:inline-block;
+  background:#31363f;
+  width:80%;
+  padding:5%;
+  border-radius:10px;
+}
+
+.session_card h5{
+  display:inline-block;
+  margin:0;
+  padding:0 10%;
+}
+
+.session_card img{
+  display:inline-block;
+  vertical-align:middle;
+  width:30px;
+}
+
+.session_out{
+  display:inline-block;
+  padding:1%;
+  transition:all 0.3s;
+}
+.session_out:hover{
+  transform:scale(1.1);
+  transition:all 0.3s;
+}
+
+.register_title{
+  color:#d0d0d2;
+}
+
+.register_card{
+  padding:6% 4%;
+  margin:0;
+  font-size:30px;
+  text-align:center;
+}
+
+.register_img{
+  padding:5% 0;
+  display:inline-block;
+  width:20%;
+  vertical-align:top;
+}
+.register_img img{
+}
+.register_img h5{
+  padding:5%;
+  transition:all 0.3s;
+  font-size:15px;
+  background:#222831;
+  color:#d0d0d2;
+}
+
+.register_img h5:hover{
+  color:#31363f;
+  background:#d0d0d2;
+  transition:all 0.3s;
+  transform:scale(1.1);
+  border-radius:10px;
+}
+
+.register_info{
+  width:50%;
+  display:inline-block;
+  padding:4% 5%;
+}
+
+.register_info input{
+  width:100%;
+}
+
+.register_info h5{
+  background:#d0d0d2;
+  margin:0;
+  padding:2% 4%;
+  mar
 }
