@@ -388,7 +388,7 @@ footer{
   top:0;
   left:0;
   user-select:none;
-  transition:opacity 0.3s, left 0.3s, top 0.3s;
+  transition:all 0.3s;
   pointer-events:stroke;
 }
 

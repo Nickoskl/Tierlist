@@ -580,26 +580,43 @@ function eventListenerInit(){
     });
     draggable[i].addEventListener('mouseup', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
-        elm.target.style.transition = `opacity 0.3s, transform 0.3s, margin 0.3s, left 0.3s`;
+        drop(boundingclient_arr,dragging_elm);
 
-        if(drop_pos>=0){
+        if(drop_pos>=110){
             
         }else{
-            elm.target.style.transition = `all 0.3s`;
             // elm.target.style.top =boundingclient_arr[i].y - tier_box_rect.y-main_rect.y-5 +"px";
             // elm.target.style.left =boundingclient_arr[i].x - tier_box_rect.x-main_rect.x+5+"px";
             
-            
             var timer = setTimeout(
-                function(){
+                function(event){
 
-                    elm.target.style.transition = `all 0.3s`;
-                    elm.target.style.top ="0px";
+                    for(var j = 0; j < draggable.length+1; j++) {
+                        console.log(event);
+                        if((boundingclient_arr[j]) && (event.clientY<boundingclient_arr[j].top+boundingclient_arr[j].height) && event.clientY>boundingclient_arr[j].top){
+                            if(j!=i && j<i){
+                                // draggable[j].style.transition = `all 0s`;
+                                draggable[j].style.left = `0px`;
+                            }else if(j!=i && j>i){
+                                // draggable[j].style.transition = `all 0s`;
+                                draggable[j].style.left = `0px`;
+                            }else{
+
+                            }
+                            console.log(j);
+                        }
+
+                    }
+
+
+                    draggable[dragging_elm+1].style.setProperty("background-color","black");
+                    draggable[dragging_elm-1].style.setProperty("background-color","white");
+                    elm.target.style.top  = "0px";
                     elm.target.style.left ="0px";
                     elm.target.style.position = `relative`;
                     
                     console.log("wewaEWe");
-                },300)
+                },1000,event)
                             
 
 
@@ -641,8 +658,8 @@ function eventListenerInit(){
     });
     draggable[i].addEventListener('mouseleave', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
-        dragging_elm=-1
-        elm.target.removeAttribute("id", "moving");
+        // dragging_elm=-1
+        // elm.target.removeAttribute("id", "moving");
     });
 
     draggable[i].addEventListener("dragstart", function(e) {
@@ -701,19 +718,14 @@ function upd_ELM(){
 
 function move(element,i) {
 
+    element.style.transition = `all 0s`;
     if(document.getElementById('moving')){
-        element.style.transition = `all 0s`;
         element.style.position = `absolute`;
         // element.style.top =boundingclient_arr[i].y - tier_box_rect.y-5 +"px";
         // element.style.left =boundingclient_arr[i].x - tier_box_rect.x+5  +"px";
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-grab-icon.svg'), auto";
         element.style.top =boundingclient_arr[i].y - tier_box_rect.y-5 +(event.clientY-pointer_start_y) +"px";
         element.style.left =boundingclient_arr[i].x - tier_box_rect.x+5 +(event.clientX-pointer_start_x) +"px";
-
-        console.log(main_rect);
-        console.log(tier_box_rect);
-        console.log(boundingclient_arr[i-1]);
-        console.log(element.style.left)
     }
 
 }
@@ -734,23 +746,45 @@ function dragoveranim(bounding_arr,i){
     }
 
 // console.log(bounding_arr[i])
-
 for(var j = 0; j < draggable.length+1; j++) {
-    if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
+    if((bounding_arr[j+1]) && (event.clientY<bounding_arr[j+1].top+bounding_arr[j+1].height) && event.clientY>bounding_arr[j+1].top){
         if(bounding_arr[j+1].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-                draggable[j].style.setProperty("background-color","blue");
-
-
-        }else if(bounding_arr[j+1].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-                draggable[j].style.setProperty("background-color","green");
-
+            console.log(j+" JJJ");
+            if(j<i && drop_pos>i){
+                dropto=j+1;
+            }else{                        
+                dropto=j;
+            }
+            // console.log(j);
+            draggable[j].style.setProperty("background-color","blue");
+        }else if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+            if(dropto==-1){
+                dropto=j-1;
+            }
+            draggable[j].style.setProperty("background-color","green");
         }else{
-
+            if(j==0){dropto=j};
+            if(j!=i){
+                if(j<i){
+                    draggable[j].style.setProperty("background-color","blue");
+                }else{
+                    draggable[j].style.setProperty("background-color","green");
+                }
+            }else{
+                draggable[j].style.setProperty("background-color","orange");
+            }
         }
-    }else{
-        // draggable[j-1].style.setProperty("background-color","red");
+    }else{   
+        if(j!=i && draggable[j]){
+            draggable[j].style.setProperty("background-color","red");
+        }
+
     }
 }
+
+    drop_pos = dropto;
+    dropto=-1;
+    console.log(drop_pos);
 // if(!init_transf){
 //     console.log(bounding_arr[i]);
 //     init_transf=bounding_arr[i].width/2;
@@ -812,18 +846,39 @@ for(var j = 0; j < draggable.length+1; j++) {
 
 }
 
-function drop(draggable,dragging_elm){
-    if(drop_pos!=-1){
-        if(draggable[dragging_elm]){
-            draggable[dragging_elm].remove();
-        }
+function drop(bounding_arr,i){
 
 
-        // console.log(draggable[dragging_elm]);
-        for(var j = 0; j < draggable.length; j++) {
-            draggable[j].style.left=`0`;
+    
+    for(var j = 0; j < draggable.length+1; j++) {
+        if((bounding_arr[j]) && (event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
+            if(j!=i && j<drop_pos){
+                console.log(j);
+                // draggable[j].style.transition = `all 0.3s`;
+                // draggable[j].style.left = `-${bounding_arr[i].width/2}px`;
+            }else if(j!=i && j>drop_pos){
+                // draggable[j].style.transition = `all 0.3s`;
+                // draggable[j-1].style.left = `${bounding_arr[i].width/2}px`;
+            }else{
+
+            }
         }
     }
+
+
+
+
+    // if(drop_pos!=-1){
+    //     if(draggable[dragging_elm]){
+    //         draggable[dragging_elm].remove();
+    //     }
+
+
+    //     // console.log(draggable[dragging_elm]);
+    //     for(var j = 0; j < draggable.length; j++) {
+    //         draggable[j].style.left=`0`;
+    //     }
+    // }
 
 }
 //  ##############################HOVER
