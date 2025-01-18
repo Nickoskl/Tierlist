@@ -374,10 +374,13 @@ footer{
 
 .template_board_tiers{
   padding-bottom:3%;
+  gap:1px;
+  border:none;
 }
 
 .template_board_tiers h5{
   font-weight:500;
+  border:none;
   background-color:#222831;
   margin:0.5% 0;
   display:inline-block;
@@ -390,6 +393,8 @@ footer{
   user-select:none;
   transition:all 0.3s;
   pointer-events:stroke;
+  /* margin-left:-6px;
+  margin-right:-6px; */
 }
 
 

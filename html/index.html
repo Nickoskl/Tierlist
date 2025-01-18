@@ -113,7 +113,7 @@
             <div class="template_board_tiers">
                 <h5 class="drag">Best</h5>
                 <h5 class="drag">Good</h5>
-                <h5 class="drag">Average</h5>
+                <h5 class="drag">Averageeeeeeeeee</h5>
                 <h5 class="drag">Bad</h5>
                 <h5 class="drag">Worst</h5>
                 <h5 class="drag">Best</h5>
@@ -443,7 +443,7 @@ document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-ar
 document.addEventListener("scroll", (event) => {
     lastKnownScrollPosition = window.scrollY;
     // console.log(lastKnownScrollPosition);
-    setTimeout(upd_ELM(), 100);
+    setTimeout(upd_ELM(), 10);
     });
 
 
@@ -474,11 +474,28 @@ var id_list=[];
 var rebound_arr=0;
 var pointer_start_x='';
 var pointer_start_y='';
+var first_row_elm_width=[];
+var button_sum_width=0;
+var bounding_arr_changed=[];
 BG_coloring();
 eventListenerInit();
 
 
 
+for(var i = 0; i < draggable.length; i++) {
+    if(boundingclient_arr[i].top == boundingclient_arr[0].top){
+        first_row_elm_width.push(6+boundingclient_arr[i].width+6);
+        button_sum_width= 6+button_sum_width+boundingclient_arr[i].width+6;
+    }
+}
+
+
+
+console.log(first_row_elm_width);
+console.log(button_sum_width-12);
+console.log(tier_box_rect.width);
+console.log(parseFloat(window.getComputedStyle(draggable[0], null).getPropertyValue('width')));
+console.log(boundingclient_arr[0].width)
 
 
 
@@ -572,86 +589,78 @@ function eventListenerInit(){
 
         dragging_elm = id_list.findIndex((x) => x === 'moving');
 
+        // elm.target.style.position='absolute';
+        // elm.target.style.top =boundingclient_arr[dragging_elm].y - tier_box_rect.y-5 +(pointer_start_y-pointer_start_y) +"px";
+        // elm.target.style.left =boundingclient_arr[dragging_elm].x - tier_box_rect.x+5 +(pointer_start_x-pointer_start_x) +"px";
+
+
+        // for(var i = 0; i < draggable.length; i++) {
+        //     draggable[i].style.transition='all 0s';
+        //     if((boundingclient_arr[i]!=boundingclient_arr[dragging_elm]) && (boundingclient_arr[i].top==boundingclient_arr[dragging_elm].top)){
+        //         if(boundingclient_arr[i].x<event.clientX - (boundingclient_arr[dragging_elm].width/2)){
+        //             draggable[i].style.left = `-${(boundingclient_arr[dragging_elm].width/2)+6}px`;
+        //         }else if(boundingclient_arr[i].x>event.clientX - (boundingclient_arr[dragging_elm].width/2)){
+        //             draggable[i].style.left = `${(boundingclient_arr[dragging_elm].width/2)+6}px`;
+        //         }else{
+
+        //         }
+        //     }
+        // }
+
+
     });
     draggable[i].addEventListener('mouseover', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
-        elm.target.style.pointerEvents = 'all';
+        // elm.target.style.pointerEvents = 'all';
 
     });
     draggable[i].addEventListener('mouseup', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
-        drop(boundingclient_arr,dragging_elm);
+        setTimeout(function(boundingclient_arr,dragging_elm){drop(boundingclient_arr,dragging_elm);},20,boundingclient_arr,dragging_elm)
+        // drop(boundingclient_arr,dragging_elm);
+        elm.target.style.transition=`all 0.3s`;
+        // draggable[dragging_elm+1].style.setProperty("background-color","black");
+        // draggable[dragging_elm-1].style.setProperty("background-color","white");
+        elm.target.style.top  = `${boundingclient_arr[dragging_elm].y-tier_box_rect.y-6}px`;
+        elm.target.style.left =`${boundingclient_arr[dragging_elm].x-tier_box_rect.x}px`;
 
-        if(drop_pos>=110){
+        // if(drop_pos>=110){
             
-        }else{
+        // }else{
             // elm.target.style.top =boundingclient_arr[i].y - tier_box_rect.y-main_rect.y-5 +"px";
             // elm.target.style.left =boundingclient_arr[i].x - tier_box_rect.x-main_rect.x+5+"px";
-            
             var timer = setTimeout(
-                function(event){
+                function(event,elm,dragging_elm){
+                    elm.target.style.transition=`all 0s`;
+                    elm.target.style.position='relative';
+                    elm.target.style.top  = "0px";
+                    elm.target.style.left ="0px";
 
-                    for(var j = 0; j < draggable.length+1; j++) {
-                        console.log(event);
-                        if((boundingclient_arr[j]) && (event.clientY<boundingclient_arr[j].top+boundingclient_arr[j].height) && event.clientY>boundingclient_arr[j].top){
-                            if(j!=i && j<i){
-                                // draggable[j].style.transition = `all 0s`;
+
+                    for(var j = 0; j < draggable.length; j++) {
+                        if((boundingclient_arr[i]!=boundingclient_arr[j])&&(boundingclient_arr[dragging_elm].top==boundingclient_arr[j].top)){
+                            if(j!=dragging_elm && j<dragging_elm){
+                                draggable[j].style.transition = `all 0s`;
                                 draggable[j].style.left = `0px`;
-                            }else if(j!=i && j>i){
-                                // draggable[j].style.transition = `all 0s`;
+                            }else if(j!=dragging_elm && j>dragging_elm){
+                                draggable[j].style.transition = `all 0s`;
                                 draggable[j].style.left = `0px`;
                             }else{
+                                
 
                             }
-                            console.log(j);
+                           
                         }
 
                     }
+                    setTimeout(function(elm){
+                    elm.target.style.transition=`all 0.3s`;
+                    elm.target.style.transform=`scale(1)`; 
+                    upd_ELM();
+                    },10,elm);
 
-
-                    draggable[dragging_elm+1].style.setProperty("background-color","black");
-                    draggable[dragging_elm-1].style.setProperty("background-color","white");
-                    elm.target.style.top  = "0px";
-                    elm.target.style.left ="0px";
-                    elm.target.style.position = `relative`;
-                    
-                    console.log("wewaEWe");
-                },1000,event)
-                            
-
-
-        }
-        // if(drop_pos>=0){
-
-        //     console.log(boundingclient_arr[dragging_elm+1].width+10);
-
-
-        //     if(draggable[dragging_elm]){
-        //         draggable[dragging_elm].remove();
-        //     }
-
-
-        //     console.log(draggable[dragging_elm]);
-        //     for(var j = 0; j < draggable.length; j++) {
-        //         draggable[j].style.left=`0`;
-        //     }
-
-
-
-
-        //     var timer = setTimeout(
-        //         function(){
-                            
-
-        //             // drop();
-        //             elm.target.remove();
-        //             // upd_ELM();
-                    
-        //         },300);
-            
-        // }
-
-        
+                },300,event,elm,dragging_elm)
+        // }       
 
         elm.target.removeAttribute("id", "moving");
 
@@ -659,7 +668,7 @@ function eventListenerInit(){
     draggable[i].addEventListener('mouseleave', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
         // dragging_elm=-1
-        // elm.target.removeAttribute("id", "moving");
+        elm.target.removeAttribute("id", "moving");
     });
 
     draggable[i].addEventListener("dragstart", function(e) {
@@ -672,6 +681,16 @@ function eventListenerInit(){
 }
 
 function upd_ELM(){
+    console.log("--------------------------UPDATING EVERYTHING----------------")
+    // for(var i = 0; i < draggable.length; i++) {
+    //     draggable[i].removeEventListener('dragstart',{});
+    //     draggable[i].removeEventListener('mousemove',{});
+    //     draggable[i].removeEventListener('mousedown',{});
+    //     draggable[i].removeEventListener('mouseover',{});
+    //     draggable[i].removeEventListener('mouseup',{});
+    //     draggable[i].removeEventListener('mouseleave',{});
+    //     draggable[i].style='';
+    // }
 
     document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
 
@@ -702,10 +721,16 @@ function upd_ELM(){
     svg_insert='';
     id_list=[];
     rebound_arr=0;
+    pointer_start_x='';
+    pointer_start_y='';
+    first_row_elm_width=[];
+    button_sum_width=0;
+    bounding_arr_changed=[];
 
    
 
     for(var i = 0; i < draggable.length; i++) {
+        draggable[i].style='';
         boundingclient_arr[i] = draggable[i].getBoundingClientRect();
         draggable[i].style.zIndex='0';
         draggable[i].style.transform='scale(1)';
@@ -713,14 +738,14 @@ function upd_ELM(){
     }
 
     BG_coloring();
-    eventListenerInit();
+    // eventListenerInit();
 }
 
 function move(element,i) {
-
-    element.style.transition = `all 0s`;
     if(document.getElementById('moving')){
+        element.style.transition = `all 0s`;
         element.style.position = `absolute`;
+        element.style.transform=`scale(0.9)`;
         // element.style.top =boundingclient_arr[i].y - tier_box_rect.y-5 +"px";
         // element.style.left =boundingclient_arr[i].x - tier_box_rect.x+5  +"px";
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-grab-icon.svg'), auto";
@@ -735,48 +760,59 @@ function dragoveranim(bounding_arr,i){
 
     
     for(var j = 0; j < draggable.length; j++) {
-        if(j>i){
-            bounding_arr[j+1] = draggable[j].getBoundingClientRect();
+        if(j!=i){
+            bounding_arr_changed[j] = draggable[j].getBoundingClientRect();
             
-        }else if(i==j){
-
-        }else{
-            bounding_arr[j] = draggable[j].getBoundingClientRect();
         }
     }
-
-// console.log(bounding_arr[i])
-for(var j = 0; j < draggable.length+1; j++) {
-    if((bounding_arr[j+1]) && (event.clientY<bounding_arr[j+1].top+bounding_arr[j+1].height) && event.clientY>bounding_arr[j+1].top){
-        if(bounding_arr[j+1].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-            console.log(j+" JJJ");
-            if(j<i && drop_pos>i){
+for(var j = 0; j < draggable.length; j++) {
+    draggable[j].style.transition=`0.3s`;
+    if((bounding_arr_changed[j]) && (event.clientY<bounding_arr_changed[j].top+bounding_arr_changed[j].height) && event.clientY>bounding_arr_changed[j].top){
+        if(bounding_arr_changed[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr_changed[j]!=bounding_arr[i]){
+            draggable[j].style.setProperty("background-color","blue");
+            // draggable[j].style.left = `-${(bounding_arr[i].width/3)+6}px`;
+            // draggable[j].style.left='-10px';
+            draggable[j].style.left='0px';
+            if(j<i){
                 dropto=j+1;
-            }else{                        
+            }else{
                 dropto=j;
             }
-            // console.log(j);
-            draggable[j].style.setProperty("background-color","blue");
-        }else if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
+        }else if(bounding_arr_changed[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr_changed[j]!=bounding_arr[i]){
+
             if(dropto==-1){
                 dropto=j-1;
             }
-            draggable[j].style.setProperty("background-color","green");
+            draggable[j].style.left='0px';
+            // draggable[j].style.left = `${(bounding_arr[i].width/3)+6}px`;
+            // draggable[j].style.left='10px';
+            if(bounding_arr[j].top != bounding_arr_changed[j].top){
+                draggable[j].style.setProperty("background-color","cyan");
+            }else{
+                draggable[j].style.setProperty("background-color","green");
+
+            }
+
+
         }else{
-            if(j==0){dropto=j};
+            
+            if(dropto==-1){dropto=j-1;};
             if(j!=i){
-                if(j<i){
-                    draggable[j].style.setProperty("background-color","blue");
-                }else{
-                    draggable[j].style.setProperty("background-color","green");
-                }
+                // if(j<i){
+                //     draggable[j].style.setProperty("background-color","blue");
+                // }else{
+                //     draggable[j].style.setProperty("background-color","green");
+                // }
             }else{
                 draggable[j].style.setProperty("background-color","orange");
             }
         }
-    }else{   
+    }else{
         if(j!=i && draggable[j]){
+            draggable[j].style.left=`0px`;
             draggable[j].style.setProperty("background-color","red");
+        }else{
+            draggable[j].style.setProperty("background-color","orange");
         }
 
     }
@@ -784,101 +820,28 @@ for(var j = 0; j < draggable.length+1; j++) {
 
     drop_pos = dropto;
     dropto=-1;
-    console.log(drop_pos);
-// if(!init_transf){
-//     console.log(bounding_arr[i]);
-//     init_transf=bounding_arr[i].width/2;
-//     for(var j = 0; j < draggable.length; j++) {
-//         if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
-//             if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-//                 draggable[j].style.left=`${init_transf}px`;
-//                 elm_matrix[j]=`-${init_transf}`;
-//             }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-//                 draggable[j].style.left=`-${init_transf}px`;
-//                 elm_matrix[j]=`${init_transf}`;
-//             }else{
-//                 elm_matrix[j]=0;
-//             }
-//         }else{
-//             elm_matrix[j]=0;
-//         }
-//     }    
-
-// }
-
-
-//     for(var j = 0; j < draggable.length; j++) {
-//         if((event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
-//             if(bounding_arr[j].x>event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-//                 if(dropto==-1){
-//                     dropto=j-1;
-//                 }
-//                 // draggable[j].style.left=`${Math.ceil(elm_matrix[j])+20}px`;
-//                 draggable[j].style.left=`20px`;
-//             }else if(bounding_arr[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr[j]!=bounding_arr[i]){
-//                 if(j<i){
-//                         dropto=j+1;
-//                     }else{                        
-//                         dropto=j;
-//                     }
-//                 draggable[j].style.left=`-20px`;
-//                 // draggable[j].style.left=`${Math.ceil(elm_matrix[j])-20}px`;
-//             }else{
-//                 if(j==0){dropto=j}
-//             }
-            
-//             draggable[i].style.transform='scale(0.9)';
-//         }else{
-//                 if(j<i){
-//                     // draggable[j].style.left=`${elm_matrix[j]}px`;
-//                 }else if(j>i){
-//                     // draggable[j].style.left=`${elm_matrix[j]}px`;
-//                 }else{
-                    
-//                 }
-            
-//             }
-        
-//     }
-//     drop_pos = dropto;
-//     dropto=-1;
-//     console.log(drop_pos);
-
+    // console.log(drop_pos);
 }
 
 function drop(bounding_arr,i){
 
-
-    
-    for(var j = 0; j < draggable.length+1; j++) {
-        if((bounding_arr[j]) && (event.clientY<bounding_arr[j].top+bounding_arr[j].height) && event.clientY>bounding_arr[j].top){
-            if(j!=i && j<drop_pos){
+   
+    for(var j = 0; j < draggable.length; j++) {
+        if((bounding_arr[i]!=bounding_arr[j])&&(bounding_arr[i].top==bounding_arr[j].top)){
+            if(j!=i && j<i){
+                draggable[j].style.transition = `all 0.3s`;
+                draggable[j].style.left = `-${(bounding_arr[i].width/2)+6}px`;
                 console.log(j);
-                // draggable[j].style.transition = `all 0.3s`;
-                // draggable[j].style.left = `-${bounding_arr[i].width/2}px`;
-            }else if(j!=i && j>drop_pos){
-                // draggable[j].style.transition = `all 0.3s`;
-                // draggable[j-1].style.left = `${bounding_arr[i].width/2}px`;
+            }else if(j!=i && j>i){
+                console.log(j);
+                draggable[j].style.transition = `all 0.3s`;
+                draggable[j].style.left = `${(bounding_arr[i].width/2)+6}px`;
             }else{
-
+                console.log(j);
+                draggable[i].style.transition = `all 0.3s`;
             }
         }
     }
-
-
-
-
-    // if(drop_pos!=-1){
-    //     if(draggable[dragging_elm]){
-    //         draggable[dragging_elm].remove();
-    //     }
-
-
-    //     // console.log(draggable[dragging_elm]);
-    //     for(var j = 0; j < draggable.length; j++) {
-    //         draggable[j].style.left=`0`;
-    //     }
-    // }
 
 }
 //  ##############################HOVER
