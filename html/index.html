@@ -15,7 +15,7 @@
         <input type="file" accept=".png,.jpg" name="file">
         <button>Upload PNG or JPG up to 10 MB</button>
     </form> -->
-    <img src="http://localhost:5000/img/44158.png" alt="">
+    <!-- <img src="http://localhost:5000/img/44158.png" alt=""> -->
     <header>
         <div class="pointer header_btn">
             <img src="./icons/male-icon.svg" alt="" class="header_icon">
@@ -589,23 +589,23 @@ function eventListenerInit(){
 
         dragging_elm = id_list.findIndex((x) => x === 'moving');
 
-        // elm.target.style.position='absolute';
-        // elm.target.style.top =boundingclient_arr[dragging_elm].y - tier_box_rect.y-5 +(pointer_start_y-pointer_start_y) +"px";
-        // elm.target.style.left =boundingclient_arr[dragging_elm].x - tier_box_rect.x+5 +(pointer_start_x-pointer_start_x) +"px";
+        elm.target.style.position='absolute';
+        elm.target.style.top =boundingclient_arr[dragging_elm].y - tier_box_rect.y-5 +(pointer_start_y-pointer_start_y) +"px";
+        elm.target.style.left =boundingclient_arr[dragging_elm].x - tier_box_rect.x+5 +(pointer_start_x-pointer_start_x) +"px";
 
 
-        // for(var i = 0; i < draggable.length; i++) {
-        //     draggable[i].style.transition='all 0s';
-        //     if((boundingclient_arr[i]!=boundingclient_arr[dragging_elm]) && (boundingclient_arr[i].top==boundingclient_arr[dragging_elm].top)){
-        //         if(boundingclient_arr[i].x<event.clientX - (boundingclient_arr[dragging_elm].width/2)){
-        //             draggable[i].style.left = `-${(boundingclient_arr[dragging_elm].width/2)+6}px`;
-        //         }else if(boundingclient_arr[i].x>event.clientX - (boundingclient_arr[dragging_elm].width/2)){
-        //             draggable[i].style.left = `${(boundingclient_arr[dragging_elm].width/2)+6}px`;
-        //         }else{
+        for(var i = 0; i < draggable.length; i++) {
+            draggable[i].style.transition='all 0s';
+            if((boundingclient_arr[i]!=boundingclient_arr[dragging_elm]) && (boundingclient_arr[i].top==boundingclient_arr[dragging_elm].top)){
+                if(boundingclient_arr[i].x<event.clientX - (boundingclient_arr[dragging_elm].width/2)){
+                    draggable[i].style.left = `-${(boundingclient_arr[dragging_elm].width/2)+6}px`;
+                }else if(boundingclient_arr[i].x>event.clientX - (boundingclient_arr[dragging_elm].width/2)){
+                    draggable[i].style.left = `${(boundingclient_arr[dragging_elm].width/2)+6}px`;
+                }else{
 
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
 
 
     });
@@ -618,15 +618,17 @@ function eventListenerInit(){
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
         setTimeout(function(boundingclient_arr,dragging_elm){drop(boundingclient_arr,dragging_elm);},20,boundingclient_arr,dragging_elm)
         // drop(boundingclient_arr,dragging_elm);
-        elm.target.style.transition=`all 0.3s`;
+        
         // draggable[dragging_elm+1].style.setProperty("background-color","black");
         // draggable[dragging_elm-1].style.setProperty("background-color","white");
-        elm.target.style.top  = `${boundingclient_arr[dragging_elm].y-tier_box_rect.y-6}px`;
-        elm.target.style.left =`${boundingclient_arr[dragging_elm].x-tier_box_rect.x}px`;
 
-        // if(drop_pos>=110){
+
+        if(drop_pos!=-1){
             
-        // }else{
+        }else{
+            elm.target.style.transition=`all 0.3s`;
+            elm.target.style.top  = `${boundingclient_arr[dragging_elm].y-tier_box_rect.y-6}px`;
+            elm.target.style.left =`${boundingclient_arr[dragging_elm].x-tier_box_rect.x}px`;
             // elm.target.style.top =boundingclient_arr[i].y - tier_box_rect.y-main_rect.y-5 +"px";
             // elm.target.style.left =boundingclient_arr[i].x - tier_box_rect.x-main_rect.x+5+"px";
             var timer = setTimeout(
@@ -654,13 +656,13 @@ function eventListenerInit(){
 
                     }
                     setTimeout(function(elm){
-                    elm.target.style.transition=`all 0.3s`;
+                    elm.target.style.transition=`all 0.3s !important`;
                     elm.target.style.transform=`scale(1)`; 
                     upd_ELM();
                     },10,elm);
 
                 },300,event,elm,dragging_elm)
-        // }       
+        }       
 
         elm.target.removeAttribute("id", "moving");
 
@@ -730,11 +732,12 @@ function upd_ELM(){
    
 
     for(var i = 0; i < draggable.length; i++) {
-        draggable[i].style='';
+        // draggable[i].style='';
         boundingclient_arr[i] = draggable[i].getBoundingClientRect();
-        draggable[i].style.zIndex='0';
-        draggable[i].style.transform='scale(1)';
-        draggable[i].style.pointerEvents = 'stroke';   
+        // draggable[i].style.transition='left 0.3s';
+        // draggable[i].style.zIndex='0';
+        // draggable[i].style.transform='scale(1)';
+        // draggable[i].style.pointerEvents = 'stroke'; 
     }
 
     BG_coloring();
@@ -829,16 +832,16 @@ function drop(bounding_arr,i){
     for(var j = 0; j < draggable.length; j++) {
         if((bounding_arr[i]!=bounding_arr[j])&&(bounding_arr[i].top==bounding_arr[j].top)){
             if(j!=i && j<i){
-                draggable[j].style.transition = `all 0.3s`;
+                draggable[j].style.transition = `left 0.3s !important`;
                 draggable[j].style.left = `-${(bounding_arr[i].width/2)+6}px`;
                 console.log(j);
             }else if(j!=i && j>i){
                 console.log(j);
-                draggable[j].style.transition = `all 0.3s`;
+                draggable[j].style.transition = `left 0.3s !important`;
                 draggable[j].style.left = `${(bounding_arr[i].width/2)+6}px`;
             }else{
-                console.log(j);
-                draggable[i].style.transition = `all 0.3s`;
+                // console.log(j);
+                // draggable[i].style.transition = `all 0.3s`;
             }
         }
     }
