@@ -567,10 +567,10 @@ function eventListenerInit(){
     /////////////////////// TIER EVENT LISTENERS
 
 
-    draggable[i].addEventListener('mousemove', (elm) => {
-        document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
+    temp_board_tiers_box_box[0].addEventListener('mousemove', (elm) => {
+        // document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
         if(dragging_elm>=0){
-            move(elm.target,dragging_elm);
+            move(draggable[dragging_elm],dragging_elm);
             dragoveranim(boundingclient_arr,dragging_elm);
         }
 
@@ -616,12 +616,7 @@ function eventListenerInit(){
     });
     draggable[i].addEventListener('mouseup', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-icon.svg'), auto";
-        setTimeout(function(boundingclient_arr,dragging_elm){drop(boundingclient_arr,dragging_elm);},20,boundingclient_arr,dragging_elm)
-        // drop(boundingclient_arr,dragging_elm);
-        
-        // draggable[dragging_elm+1].style.setProperty("background-color","black");
-        // draggable[dragging_elm-1].style.setProperty("background-color","white");
-
+        setTimeout(function(boundingclient_arr,dragging_elm){drop_start(boundingclient_arr,dragging_elm);},20,boundingclient_arr,dragging_elm);
 
         if(drop_pos!=-1){
             
@@ -629,39 +624,7 @@ function eventListenerInit(){
             elm.target.style.transition=`all 0.3s`;
             elm.target.style.top  = `${boundingclient_arr[dragging_elm].y-tier_box_rect.y-6}px`;
             elm.target.style.left =`${boundingclient_arr[dragging_elm].x-tier_box_rect.x}px`;
-            // elm.target.style.top =boundingclient_arr[i].y - tier_box_rect.y-main_rect.y-5 +"px";
-            // elm.target.style.left =boundingclient_arr[i].x - tier_box_rect.x-main_rect.x+5+"px";
-            var timer = setTimeout(
-                function(event,elm,dragging_elm){
-                    elm.target.style.transition=`all 0s`;
-                    elm.target.style.position='relative';
-                    elm.target.style.top  = "0px";
-                    elm.target.style.left ="0px";
-
-
-                    for(var j = 0; j < draggable.length; j++) {
-                        if((boundingclient_arr[i]!=boundingclient_arr[j])&&(boundingclient_arr[dragging_elm].top==boundingclient_arr[j].top)){
-                            if(j!=dragging_elm && j<dragging_elm){
-                                draggable[j].style.transition = `all 0s`;
-                                draggable[j].style.left = `0px`;
-                            }else if(j!=dragging_elm && j>dragging_elm){
-                                draggable[j].style.transition = `all 0s`;
-                                draggable[j].style.left = `0px`;
-                            }else{
-                                
-
-                            }
-                           
-                        }
-
-                    }
-                    setTimeout(function(elm){
-                    elm.target.style.transition=`all 0.3s !important`;
-                    elm.target.style.transform=`scale(1)`; 
-                    upd_ELM();
-                    },10,elm);
-
-                },300,event,elm,dragging_elm)
+            setTimeout(function(event,elm,dragging_elm){drop_end(event,elm,dragging_elm)},300,event,elm,dragging_elm);
         }       
 
         elm.target.removeAttribute("id", "moving");
@@ -669,8 +632,14 @@ function eventListenerInit(){
     });
     draggable[i].addEventListener('mouseleave', (elm) => {
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
-        // dragging_elm=-1
-        elm.target.removeAttribute("id", "moving");
+        if(dragging_elm!=-1 && draggable[dragging_elm]== elm.target){
+            setTimeout(function(boundingclient_arr,dragging_elm){drop_start(boundingclient_arr,dragging_elm);},20,boundingclient_arr,dragging_elm);
+            elm.target.style.transition=`all 0.3s`;
+            elm.target.style.top  = `${boundingclient_arr[dragging_elm].y-tier_box_rect.y-6}px`;
+            elm.target.style.left =`${boundingclient_arr[dragging_elm].x-tier_box_rect.x}px`;
+            setTimeout(function(event,elm,dragging_elm){drop_end(event,elm,dragging_elm)},300,event,elm,dragging_elm);
+        }
+
     });
 
     draggable[i].addEventListener("dragstart", function(e) {
@@ -826,7 +795,7 @@ for(var j = 0; j < draggable.length; j++) {
     // console.log(drop_pos);
 }
 
-function drop(bounding_arr,i){
+function drop_start(bounding_arr,i){
 
    
     for(var j = 0; j < draggable.length; j++) {
@@ -847,6 +816,43 @@ function drop(bounding_arr,i){
     }
 
 }
+
+function drop_end(event,elm,dragging_elm){
+
+
+    elm.target.style.transition=`all 0s`;
+                    elm.target.style.position='relative';
+                    elm.target.style.top  = "0px";
+                    elm.target.style.left ="0px";
+
+
+                    for(var j = 0; j < draggable.length; j++) {
+                        if((boundingclient_arr[i]!=boundingclient_arr[j])&&(boundingclient_arr[dragging_elm].top==boundingclient_arr[j].top)){
+                            if(j!=dragging_elm && j<dragging_elm){
+                                draggable[j].style.transition = `all 0s`;
+                                draggable[j].style.left = `0px`;
+                            }else if(j!=dragging_elm && j>dragging_elm){
+                                draggable[j].style.transition = `all 0s`;
+                                draggable[j].style.left = `0px`;
+                            }else{
+                                
+
+                            }
+                           
+                        }
+
+                    }
+                    setTimeout(function(elm){
+                    elm.target.style.transition=`all 0.3s !important`;
+                    elm.target.style.transform=`scale(1)`; 
+                    upd_ELM();
+                    },10,elm);
+
+
+
+}
+
+
 //  ##############################HOVER
 
  for(var i = 0; i < clickable.length; i++) {
