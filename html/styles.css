@@ -391,7 +391,8 @@ footer{
   top:0;
   left:0;
   user-select:none;
-  transition:all 0.3s;
+  transition:all 0s;
+  transform:scale(1);
   pointer-events:all;
   /* margin-left:-6px;
   margin-right:-6px; */

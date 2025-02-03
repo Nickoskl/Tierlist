@@ -526,23 +526,23 @@ if ((draggable.length%2)=== 0){
 for(var i = 0; i < draggable.length; i++) {
     draggable[ i ].style.setProperty("--pseudo-text", `"${i+1}"`);
     
-    // if(draggable.length%2===0){
-    //     if(i<(draggable.length/2)){
-    //             // console.log(i+"TEST TO CSS LOOP 1 "+Math.round(green_val[(draggable.length/2)-i]));
-    //             draggable[i].style.setProperty("background-color", `rgb(20,${Math.round(green_val[(draggable.length/2)-i])},20)`);
-    //         }else{
-    //             // console.log(i+"TEST TO CSS"+Math.round(Math.round(red_val[i-(green_val.length-2)])));
-    //             draggable[i].style.setProperty("background-color", `rgb(${Math.round(red_val[i-(green_val.length-2)])},20,20)`);
-    //         }
-    // }else{
-    //     if(i<(draggable.length/2)){
-    //             // console.log(i+" TEST TO CSS LOOP 1 "+green_val[Math.floor(draggable.length/2)-(i-1)]);
-    //             draggable[i].style.setProperty("background-color", `rgb(20,${green_val[Math.floor(draggable.length/2)-(i-1)]},20)`);
-    //         }else{
-    //             // console.log(i+" TEST TO CSS "+red_val[i-(green_val.length-3)]);
-    //             draggable[i].style.setProperty("background-color", `rgb(${red_val[i-(green_val.length-3)]},20,20)`);
-    //         }
-    // }
+    if(draggable.length%2===0){
+        if(i<(draggable.length/2)){
+                // console.log(i+"TEST TO CSS LOOP 1 "+Math.round(green_val[(draggable.length/2)-i]));
+                draggable[i].style.setProperty("background-color", `rgb(20,${Math.round(green_val[(draggable.length/2)-i])},20)`);
+            }else{
+                // console.log(i+"TEST TO CSS"+Math.round(Math.round(red_val[i-(green_val.length-2)])));
+                draggable[i].style.setProperty("background-color", `rgb(${Math.round(red_val[i-(green_val.length-2)])},20,20)`);
+            }
+    }else{
+        if(i<(draggable.length/2)){
+                // console.log(i+" TEST TO CSS LOOP 1 "+green_val[Math.floor(draggable.length/2)-(i-1)]);
+                draggable[i].style.setProperty("background-color", `rgb(20,${green_val[Math.floor(draggable.length/2)-(i-1)]},20)`);
+            }else{
+                // console.log(i+" TEST TO CSS "+red_val[i-(green_val.length-3)]);
+                draggable[i].style.setProperty("background-color", `rgb(${red_val[i-(green_val.length-3)]},20,20)`);
+            }
+    }
 }
 
 }
@@ -580,7 +580,6 @@ function eventListenerInit(){
         elm.target.setAttribute("id", "moving");
         pointer_start_x=event.clientX;
         pointer_start_y=event.clientY;
-        // elm.target.style.transform='scale(1.2)';
         elm.target.style.zIndex='2';
         for(var i = 0; i < draggable.length; i++) {
             id_list[i] = draggable[i].getAttribute("id");
@@ -589,14 +588,16 @@ function eventListenerInit(){
 
         dragging_elm = id_list.findIndex((x) => x === 'moving');
 
-        elm.target.style.position='absolute';
-        elm.target.style.top =boundingclient_arr[dragging_elm].y - tier_box_rect.y-5 +(pointer_start_y-pointer_start_y) +"px";
-        elm.target.style.left =boundingclient_arr[dragging_elm].x - tier_box_rect.x+5 +(pointer_start_x-pointer_start_x) +"px";
-
 
         for(var i = 0; i < draggable.length; i++) {
-            draggable[i].style.transition='all 0s';
-            if((boundingclient_arr[i]!=boundingclient_arr[dragging_elm]) && (boundingclient_arr[i].top==boundingclient_arr[dragging_elm].top)){
+
+            // if((i!=dragging_elm) && (boundingclient_arr[i].top != bounding_arr_changed[i].top)){
+            //     console.log(bounding_arr_changed[i]);
+            //     console.log("THIS IS "+i+"  NUM");
+            // }
+
+            draggable[i].style.transition=`0s`;
+            if((boundingclient_arr[dragging_elm]!=boundingclient_arr[i])&&(boundingclient_arr[dragging_elm].top<=boundingclient_arr[i].top)&&(boundingclient_arr[dragging_elm].bottom>=boundingclient_arr[i].bottom)){
                 if(boundingclient_arr[i].x<event.clientX - (boundingclient_arr[dragging_elm].width/2)){
                     draggable[i].style.left = `-${(boundingclient_arr[dragging_elm].width/2)+6}px`;
                 }else if(boundingclient_arr[i].x>event.clientX - (boundingclient_arr[dragging_elm].width/2)){
@@ -606,6 +607,10 @@ function eventListenerInit(){
                 }
             }
         }
+
+        move(draggable[dragging_elm],dragging_elm);
+        dragoveranim(boundingclient_arr,dragging_elm);
+
 
 
     });
@@ -619,12 +624,17 @@ function eventListenerInit(){
         setTimeout(function(boundingclient_arr,dragging_elm){drop_start(boundingclient_arr,dragging_elm);},20,boundingclient_arr,dragging_elm);
 
         if(drop_pos!=-1){
-            
-        }else{
-            elm.target.style.transition=`all 0.3s`;
+            elm.target.style.transition=`all .3s`;
+            elm.target.style.transform=`scale(1)`;
             elm.target.style.top  = `${boundingclient_arr[dragging_elm].y-tier_box_rect.y-6}px`;
             elm.target.style.left =`${boundingclient_arr[dragging_elm].x-tier_box_rect.x}px`;
-            setTimeout(function(event,elm,dragging_elm){drop_end(event,elm,dragging_elm)},300,event,elm,dragging_elm);
+            setTimeout(function(event,elm,dragging_elm,boundingclient_arr){drop_end(event,elm,dragging_elm,boundingclient_arr)},300,event,elm,dragging_elm,boundingclient_arr);
+        }else{
+            elm.target.style.transition=`all .3s`;
+            elm.target.style.transform=`scale(1)`;
+            elm.target.style.top  = `${boundingclient_arr[dragging_elm].y-tier_box_rect.y-6}px`;
+            elm.target.style.left =`${boundingclient_arr[dragging_elm].x-tier_box_rect.x}px`;
+            setTimeout(function(event,elm,dragging_elm,boundingclient_arr){drop_end(event,elm,dragging_elm,boundingclient_arr)},300,event,elm,dragging_elm,boundingclient_arr);
         }       
 
         elm.target.removeAttribute("id", "moving");
@@ -634,10 +644,10 @@ function eventListenerInit(){
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
         if(dragging_elm!=-1 && draggable[dragging_elm]== elm.target){
             setTimeout(function(boundingclient_arr,dragging_elm){drop_start(boundingclient_arr,dragging_elm);},20,boundingclient_arr,dragging_elm);
-            elm.target.style.transition=`all 0.3s`;
+            elm.target.style.transition=`all .3s`;
             elm.target.style.top  = `${boundingclient_arr[dragging_elm].y-tier_box_rect.y-6}px`;
             elm.target.style.left =`${boundingclient_arr[dragging_elm].x-tier_box_rect.x}px`;
-            setTimeout(function(event,elm,dragging_elm){drop_end(event,elm,dragging_elm)},300,event,elm,dragging_elm);
+            setTimeout(function(event,elm,dragging_elm,boundingclient_arr){drop_end(event,elm,dragging_elm,boundingclient_arr)},300,event,elm,dragging_elm,boundingclient_arr);
         }
 
     });
@@ -653,15 +663,6 @@ function eventListenerInit(){
 
 function upd_ELM(){
     console.log("--------------------------UPDATING EVERYTHING----------------")
-    // for(var i = 0; i < draggable.length; i++) {
-    //     draggable[i].removeEventListener('dragstart',{});
-    //     draggable[i].removeEventListener('mousemove',{});
-    //     draggable[i].removeEventListener('mousedown',{});
-    //     draggable[i].removeEventListener('mouseover',{});
-    //     draggable[i].removeEventListener('mouseup',{});
-    //     draggable[i].removeEventListener('mouseleave',{});
-    //     draggable[i].style='';
-    // }
 
     document.getElementsByTagName("body")[0].style.cursor = "url('./icons/pointer-arrow-icon.svg'), auto";
 
@@ -701,23 +702,17 @@ function upd_ELM(){
    
 
     for(var i = 0; i < draggable.length; i++) {
-        // draggable[i].style='';
         boundingclient_arr[i] = draggable[i].getBoundingClientRect();
-        // draggable[i].style.transition='left 0.3s';
-        // draggable[i].style.zIndex='0';
-        // draggable[i].style.transform='scale(1)';
-        // draggable[i].style.pointerEvents = 'stroke'; 
     }
 
-    BG_coloring();
+    // BG_coloring();
     // eventListenerInit();
 }
 
 function move(element,i) {
     if(document.getElementById('moving')){
-        element.style.transition = `all 0s`;
+        element.style.transition = `left 0s, top 0s, transform .3s`;
         element.style.position = `absolute`;
-        element.style.transform=`scale(0.9)`;
         // element.style.top =boundingclient_arr[i].y - tier_box_rect.y-5 +"px";
         // element.style.left =boundingclient_arr[i].x - tier_box_rect.x+5  +"px";
         document.getElementsByTagName("body")[0].style.cursor = "url('./icons/cursor-hand-grab-icon.svg'), auto";
@@ -729,16 +724,18 @@ function move(element,i) {
 
 function dragoveranim(bounding_arr,i){
 
-
-    
     for(var j = 0; j < draggable.length; j++) {
         if(j!=i){
             bounding_arr_changed[j] = draggable[j].getBoundingClientRect();
-            
+        }else{
+            bounding_arr_changed[j]=bounding_arr[i];
         }
     }
+    
+
+    
 for(var j = 0; j < draggable.length; j++) {
-    draggable[j].style.transition=`0.3s`;
+    draggable[j].style.transition=`.3s`;
     if((bounding_arr_changed[j]) && (event.clientY<bounding_arr_changed[j].top+bounding_arr_changed[j].height) && event.clientY>bounding_arr_changed[j].top){
         if(bounding_arr_changed[j].x<event.clientX - (bounding_arr[i].width/2) && bounding_arr_changed[j]!=bounding_arr[i]){
             draggable[j].style.setProperty("background-color","blue");
@@ -773,7 +770,7 @@ for(var j = 0; j < draggable.length; j++) {
                 // if(j<i){
                 //     draggable[j].style.setProperty("background-color","blue");
                 // }else{
-                //     draggable[j].style.setProperty("background-color","green");
+                    // draggable[j].style.setProperty("background-color","green");
                 // }
             }else{
                 draggable[j].style.setProperty("background-color","orange");
@@ -792,24 +789,43 @@ for(var j = 0; j < draggable.length; j++) {
 
     drop_pos = dropto;
     dropto=-1;
+
+    if(drop_pos!=-1){
+        // draggable[i].style.transform='scale(0.9)';
+    }else{
+        // draggable[i].style.transform='scale(1.1)';
+    }
     // console.log(drop_pos);
 }
 
 function drop_start(bounding_arr,i){
+    // console.log(draggable[2].getBoundingClientRect());
+    // console.log(draggable[3].getBoundingClientRect());
+    // var tr = window.getComputedStyle(draggable[3]).transform
+    // const matrix = tr.match(/matrix\(([^)]+)\)/)[1].split(", ");
+    // scaleY = parseFloat(matrix[3]);
+    // console.log(draggable[3].getBoundingClientRect().height-(draggable[3].getBoundingClientRect().height*(scaleY/10)));
+    // console.log(scaleY);
+    // console.log(draggable[3].getBoundingClientRect().height-draggable[3].offsetHeight*(scaleY/10));
+    // ####################################################  PROBLEM WITH WRONG BOUNDING BOX
+    // ####################################################  LEFT AND TOP WHEN DRAGGING ELEMENT CHANGING SCALE
 
-   
+    
     for(var j = 0; j < draggable.length; j++) {
-        if((bounding_arr[i]!=bounding_arr[j])&&(bounding_arr[i].top==bounding_arr[j].top)){
+        // console.log("ELEMENT          "+j)
+        if((bounding_arr[i]!=bounding_arr[j])&&(bounding_arr[i].top<=bounding_arr[j].top)&&(bounding_arr[i].bottom>=bounding_arr[j].bottom)){
+
+            console.log("DROP_STARTTTTTTTTT   "+j);
             if(j!=i && j<i){
-                draggable[j].style.transition = `left 0.3s !important`;
+                draggable[j].style.transition = `left .3s`;
                 draggable[j].style.left = `-${(bounding_arr[i].width/2)+6}px`;
-                console.log(j);
+                
             }else if(j!=i && j>i){
-                console.log(j);
-                draggable[j].style.transition = `left 0.3s !important`;
+                draggable[j].style.transition = `left .3s`;
                 draggable[j].style.left = `${(bounding_arr[i].width/2)+6}px`;
             }else{
                 // console.log(j);
+                // console.log(bounding_arr);
                 // draggable[i].style.transition = `all 0.3s`;
             }
         }
@@ -817,22 +833,22 @@ function drop_start(bounding_arr,i){
 
 }
 
-function drop_end(event,elm,dragging_elm){
+function drop_end(event,elm,dragging_elm,bounding_arr){
 
 
-    elm.target.style.transition=`all 0s`;
+                    elm.target.style.transition=`left 0s, top 0s, transform .3s`;
                     elm.target.style.position='relative';
                     elm.target.style.top  = "0px";
                     elm.target.style.left ="0px";
 
 
                     for(var j = 0; j < draggable.length; j++) {
-                        if((boundingclient_arr[i]!=boundingclient_arr[j])&&(boundingclient_arr[dragging_elm].top==boundingclient_arr[j].top)){
+                        if((bounding_arr[dragging_elm]!=bounding_arr[j])&&(bounding_arr[dragging_elm].top<=bounding_arr[j].top)&&(bounding_arr[dragging_elm].bottom>=bounding_arr[j].bottom)){
                             if(j!=dragging_elm && j<dragging_elm){
-                                draggable[j].style.transition = `all 0s`;
+                                draggable[j].style.transition = `0s`;
                                 draggable[j].style.left = `0px`;
                             }else if(j!=dragging_elm && j>dragging_elm){
-                                draggable[j].style.transition = `all 0s`;
+                                draggable[j].style.transition = `0s`;
                                 draggable[j].style.left = `0px`;
                             }else{
                                 
@@ -843,7 +859,7 @@ function drop_end(event,elm,dragging_elm){
 
                     }
                     setTimeout(function(elm){
-                    elm.target.style.transition=`all 0.3s !important`;
+                    elm.target.style.transition=`all .3s`;
                     elm.target.style.transform=`scale(1)`; 
                     upd_ELM();
                     },10,elm);
