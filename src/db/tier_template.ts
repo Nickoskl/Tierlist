@@ -16,7 +16,7 @@ export const TierModel = mongoose.model('Tier_Template', TierlistTempSchema); //
 
 export const getTemplateTierlists = () => TierModel.find();
 export const getTemplateTierlistByName = (searchname:string) =>{TierModel.findOne({name: searchname})};
-export const getTemplateTierlistById = (t_id:string) => TierModel.findOne({_id: t_id});
+export const getTemplateTierlistById = (t_id:string) => TierModel.findById(t_id);
 export const createTemplateTierlist = (values: Record<string, any>) => new TierModel(values).save().then((tierlist) => tierlist.toObject());
 export const deleteTemplateTierlistById = (t_id:string) =>TierModel.findOneAndDelete({_id: t_id});
 

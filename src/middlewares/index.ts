@@ -45,13 +45,14 @@ export const mustBeOwnerOrAdmin = async (req:express.Request, res:express.Respon
             return res.sendStatus(403);
         }
         const index = loggedIntoken.session.token.indexOf(cookie)
-        if (loggedInUserSuper !== false || searchtoken.session.token == loggedIntoken.session.token){
+        if (searchtoken.session.token !== loggedIntoken.session.token && loggedInUserSuper==false){
             return res.sendStatus(403);
         }
         return next();
 
     }catch(error){
         console.log("Error on mustbeowner in func");
+        
         return res.sendStatus(400);
     }
 }

@@ -89,31 +89,36 @@ export const user_delete = async (req:express.Request, res:express.Response) =>{
 export const user_edit = async (req:express.Request, res:express.Response) =>{
     try{
         const {id} = req.params;
-        const {email, password_new, password_old, username, img, sesionOut} = req.body;
+        const {email, password_new, password_old, username, img, sessionout} = req.body;
     
         const user = await getUserById(id).select('+session.token +session.date +session.ip +authentication.salt +authentication.password');
 
-        if(!user || !user.session || !user.authentication || !user.authentication.salt){
+        if(!user || !user.session || !user.authentication || !user.authentication.salt || !user.authentication.password){
             return res.sendStatus(400);
         }
 
-        if(email.length<1 && email.length<1 && password_old.length<1 && username.length<1 && img<1 && sesionOut.length>0){
-            user.session.token.splice(sesionOut,1);
-            user.session.date.splice(sesionOut,1);
-            user.session.ip.splice(sesionOut,1);
+        if(!email && !password_old && !username && !img && sessionout && sessionout.length>0){
+            const sessionusr = await getUserBySessionToken(sessionout).select('+session.token +session.date +session.ip');
+            console.log(sessionout);
+            if(!sessionusr || !sessionusr.session || !sessionusr.session.ip || !sessionusr.session.token || !sessionusr.session.date ){
+                return res.sendStatus(400);
+            }
+            sessionusr.session.token.splice(sessionout,1);
+            sessionusr.session.date.splice(sessionout,1);
+            sessionusr.session.ip.splice(sessionout,1);
 
-            await user.save();
-
-            return res.status(200).json(user).end();
+            await sessionusr.save();
+            
+            return res.status(200).json(sessionusr).end();
         }
 
         // HARDCODED STOP TO EDIT ADMIN USER
         // HARDCODED STOP TO EDIT ADMIN USER
         // HARDCODED STOP TO EDIT ADMIN USER
 
-        if(user.username == 'Admin'){
-            return res.sendStatus(418);
-        }
+        // if(user.username == 'Admin'){
+        //     return res.sendStatus(418);
+        // }
 
         
         const isSuper = get(req, 'identity.super') as unknown as boolean;
@@ -123,11 +128,15 @@ export const user_edit = async (req:express.Request, res:express.Response) =>{
             return res.sendStatus(400);
         }
 
+        if(!username || !password_new){
+            console.log("NO USERNAME OR PASS")
+            return res.sendStatus(400);
+        }
         user.username = username;
         user.authentication.password = authentication(user.authentication.salt, password_new);
         user.email = email;
 
-        if(img!==user.avatar){
+        if(img!==user.avatar && img){
             user.avatar = img;
         }
 

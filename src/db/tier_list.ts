@@ -18,6 +18,6 @@ export const TierModel = mongoose.model('Tierlist', TierlistSchema); //CHANGE NA
 export const getTierlists = () => TierModel.find();
 export const getTierlistsByTemplate = (template_id:string) => TierModel.find({template: template_id});
 export const getTierlistByName = (searchname:string) =>TierModel.findOne({name: searchname});
-export const getTierlistById = (t_id:string) => TierModel.findOne({_id: t_id});
+export const getTierlistById = (t_id:string) => TierModel.findById(t_id);
 export const createTierlist = (values: Record<string, any>) => new TierModel(values).save().then((tierlist) => tierlist.toObject());
 export const deleteTierlistById = (t_id:string) =>TierModel.findOneAndDelete({_id: t_id});
