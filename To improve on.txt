@@ -20,3 +20,5 @@
 +Asset for deletion should be scheduled for later at a specific time for controlled deletion
 +Validate images/files of the contents before uploading to the server
 +Dont use proprietary functions for DB interactions for better code readability
++Should have used FORMDATA for user credentials
+##this is getting too long 😢

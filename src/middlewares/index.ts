@@ -10,7 +10,7 @@ export const mustBeLoggedIn = async (req:express.Request, res: express.Response,
 
         if(!sessiontoken){
             console.log("no session token")
-            return res.redirect('/user/login');
+            return res.sendStatus(400);
         }
 
         const userExists = await getUserBySessionToken(sessiontoken);
