@@ -4,6 +4,7 @@ const TierlistSchema = new mongoose.Schema({
     name: {type: String, required: true},
     description:{ type: String, required:true},
     template: { type: String, required:true},
+    background:{ type: String, required: true},
     created: { type: Date, required:true},
     by: { type: String, required:true},
     last_edit: { type: Date, required:true},

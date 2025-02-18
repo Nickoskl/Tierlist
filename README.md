@@ -1,14 +1,14 @@
 <h1 align="center" id="title">TierList 📃</h1>
 
-<p id="description">For my first project I chose to make a seemingly simple project focusing on the Back-end while trying out VUE with its virtual DOM on the <a href="/">Front-end Repo Here </a>.</p>
+<p id="description">For my first project I chose to make a seemingly simple project focusing on the Back-end while trying out VUE with its virtual DOM on the <a href="https://github.com/Nickoskl/Tierlist-Front-End.git">Front-end Repo Here </a>.</p>
 
-<h2>🚀 Demo</h2>
+<h2 align="center">🚀 Demo</h2>
 
-[https://urltobeupdated](https://urltobeupdated)
+<p align="center"><a href="https://urltobeupdated">https://urltobeupdated</a></p>
 
-<h2>🛠️ Tech Stack</h2>
+<h2 align="center">🛠️ Tech Stack</h2>
 
-<p align="left">
+<p align="center">
   <a href="https://nodejs.org/" target="_blank">
     <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
   </a>
@@ -19,7 +19,7 @@
     <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" alt="Vue.js" />
   </a>
   <a href="https://expressjs.com/" target="_blank">
-    <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js" />
+    <img src="https://img.shields.io/badge/Express.js-FFF82A?style=for-the-badge&logo=express&logoColor=black" alt="Express.js" />
   </a>
   <a href="https://www.mongodb.com/" target="_blank">
     <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
@@ -29,6 +29,9 @@
   </a>
   <a href="https://www.npmjs.com/package/cookie-parser" target="_blank">
     <img src="https://img.shields.io/badge/Cookie_Parser-000000?style=for-the-badge&logo=npm&logoColor=white" alt="Cookie Parser" />
+  </a>
+  <a href="https://axios-http.com/" target="_blank">
+    <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white" alt="Axios" />
   </a>
 </p>
 

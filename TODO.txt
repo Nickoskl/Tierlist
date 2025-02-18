@@ -12,4 +12,4 @@
 Proper TODO file to prevent me from ripping my eyes out every time I search for my progress.
 
 
-Use Joy for field validation
+Delete Tierlist background before db deletion

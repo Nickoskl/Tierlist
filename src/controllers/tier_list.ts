@@ -24,11 +24,11 @@ export const tier_list_update = async (req:express.Request, res:express.Response
     try{
 
         const {id} = req.params;
-        const {name, description, placement} = req.body;
+        const {name, description,background, placement} = req.body;
 
         const tierlist = await getTierlistById(id).select('+list_config.placement');
 
-        if(!id || !tierlist || !tierlist.name || !tierlist.list_config){
+        if(!id || !tierlist || !tierlist.name || !tierlist.list_config || !name || !description || !background || !placement){
             return res.sendStatus(400);
         }
 
@@ -39,6 +39,7 @@ export const tier_list_update = async (req:express.Request, res:express.Response
         
         tierlist.name = name;
         tierlist.description = description;
+        tierlist.background = background;
         tierlist.list_config.placement = placement;
         tierlist.last_edit = new Date();
 
@@ -84,7 +85,7 @@ export const tier_list_get = async (req:express.Request, res:express.Response) =
 export const tier_list_create = async (req: express.Request, res: express.Response) =>{
     
     try{
-        const {name, description, template, placement} = req.body;
+        const {name, description, template, placement, background} = req.body;
 
         const loggedInUserEmail = get(req, 'identity.email') as unknown as string;
         const loggedInUserName = get(req, 'identity.name') as unknown as string;
@@ -94,7 +95,7 @@ export const tier_list_create = async (req: express.Request, res: express.Respon
         const userFromDB = await getUserById(loggedInId);
 
 
-        if (!name || !description || !template || !placement || !loggedInUserEmail || !templateFromDB || !templateFromDB.name || !templateFromDB.list_config ||!userFromDB){
+        if (!name || !description || !template || !background || !placement || !loggedInUserEmail || !templateFromDB || !templateFromDB.name || !templateFromDB.list_config ||!userFromDB){
             return res.sendStatus(400);
         }
 

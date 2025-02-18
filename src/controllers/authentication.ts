@@ -136,7 +136,7 @@ export const user_edit = async (req:express.Request, res:express.Response) =>{
         user.authentication.password = authentication(user.authentication.salt, password_new);
         user.email = email;
 
-        if(img!==user.avatar && img){
+        if( img && img!==user.avatar){
             user.avatar = img;
         }
 
@@ -209,8 +209,10 @@ export const user_login = async (req: express.Request, res:express.Response) =>{
         const salt = random();
 
         if(sessiontoken){
+            const user = await getUserBySessionToken(sessiontoken).select('+authentication.salt +authentication.password +session.token +session.date +session.ip');
+
             console.log("User already logged in");
-            return res.sendStatus(400);
+            return res.status(200).json(user).end();
         }
 
         if( !email || !password){
