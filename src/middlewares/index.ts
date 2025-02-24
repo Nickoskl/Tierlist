@@ -45,7 +45,8 @@ export const mustBeOwnerOrAdmin = async (req:express.Request, res:express.Respon
             return res.sendStatus(403);
         }
         const index = loggedIntoken.session.token.indexOf(cookie)
-        if (searchtoken.session.token !== loggedIntoken.session.token && loggedInUserSuper==false){
+        if ((searchtoken.session.token[0] !== loggedIntoken.session.token[0]) && loggedInUserSuper==false){
+            console.log(loggedIntoken.session.token[0]);
             return res.sendStatus(403);
         }
         return next();

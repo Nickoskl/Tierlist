@@ -13,3 +13,5 @@ Proper TODO file to prevent me from ripping my eyes out every time I search for 
 
 
 Delete Tierlist background before db deletion
+Check for image use or abandonment on post fields where image is required
+Update user edit to handle updates on hist lists

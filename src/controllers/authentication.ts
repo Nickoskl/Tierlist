@@ -63,8 +63,12 @@ export const user_delete = async (req:express.Request, res:express.Response) =>{
 
         const avatarToDel =  await getImgById(parseInt(only_id));
 
-        if(!avatarToDel){
-            return res.sendStatus(400);
+        if(user.avatar.length>0 && user.avatar!=='default'){
+            if(avatarToDel){
+                const imgDeleted = await imgur_delete(avatarToDel.deletehash);
+            }else{
+                return res.sendStatus(400);
+            }
         }
 
         user.lists.forEach(async tierlist => {
@@ -74,7 +78,7 @@ export const user_delete = async (req:express.Request, res:express.Response) =>{
 
         const user_del = await deleteUserById(id);
 
-        const imgDeleted = await imgur_delete(avatarToDel.deletehash);
+
 
         return res.json(user_del);
 
@@ -98,18 +102,23 @@ export const user_edit = async (req:express.Request, res:express.Response) =>{
         }
 
         if(!email && !password_old && !username && !img && sessionout && sessionout.length>0){
-            const sessionusr = await getUserBySessionToken(sessionout).select('+session.token +session.date +session.ip');
+            // const sessionusr = await getUserBySessionToken(sessionout).select('+session.token +session.date +session.ip');
             console.log(sessionout);
-            if(!sessionusr || !sessionusr.session || !sessionusr.session.ip || !sessionusr.session.token || !sessionusr.session.date ){
+            const sessionIndex = user.session.token.indexOf(sessionout);
+            // if(!sessionusr || !sessionusr.session || !sessionusr.session.ip || !sessionusr.session.token || !sessionusr.session.date ){
+            //     return res.sendStatus(400);
+            // }
+            if (sessionIndex === -1) {
                 return res.sendStatus(400);
             }
-            sessionusr.session.token.splice(sessionout,1);
-            sessionusr.session.date.splice(sessionout,1);
-            sessionusr.session.ip.splice(sessionout,1);
 
-            await sessionusr.save();
+            user.session.token.splice(sessionIndex, 1);
+            user.session.date.splice(sessionIndex, 1);
+            user.session.ip.splice(sessionIndex, 1);
+
+            await user.save();
             
-            return res.status(200).json(sessionusr).end();
+            return res.status(200).json(user).end();
         }
 
         // HARDCODED STOP TO EDIT ADMIN USER
@@ -125,7 +134,7 @@ export const user_edit = async (req:express.Request, res:express.Response) =>{
 
         if((isSuper == false) && (authentication(user.authentication.salt, password_old) !== user.authentication.password)){
             console.log("Old password does not match");
-            return res.sendStatus(400);
+            return res.status(400).json("Old password does not match").end();
         }
 
         if(!username || !password_new){
@@ -210,7 +219,9 @@ export const user_login = async (req: express.Request, res:express.Response) =>{
 
         if(sessiontoken){
             const user = await getUserBySessionToken(sessiontoken).select('+authentication.salt +authentication.password +session.token +session.date +session.ip');
-
+            if(!user){
+                return res.sendStatus(403);
+            }
             console.log("User already logged in");
             return res.status(200).json(user).end();
         }
@@ -229,6 +240,11 @@ export const user_login = async (req: express.Request, res:express.Response) =>{
         const exprectedHash = authentication(user.authentication.salt, password);
 
         if(user.authentication.password !== exprectedHash){
+
+            if(user){
+                return res.status(403).json("incorrect password").end();
+            }
+
             return res.sendStatus(404);
         }
 
