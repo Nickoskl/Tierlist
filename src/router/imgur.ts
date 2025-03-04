@@ -7,7 +7,7 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
 export default (router: express.Router) => {
-    router.get('/img/:id.:ext', get_img);
+    router.get('/img/:id', get_img);
     router.post('/img/upload', upload.single('file'),  upload_img);
-    router.delete('/img/:id.:ext', delete_img);
+    router.delete('/img/:id', delete_img);
 };

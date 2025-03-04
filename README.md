@@ -38,13 +38,24 @@
 
 <h2>🧐 Features</h2>
 
-Here're some of the project's best features:
 
-*   Authentication with Salt Crypto secret and password
-*   Photo upload get delete using external API (Imgur)
-*   User sessions and session logout
-*   Super users with logout edit and page view privileges
-*   A checksum for data validation that I ended up not using
+*   🔒  [Authentication](https://github.com/Nickoskl/Tierlist/blob/main/src/helpers/index.ts) with Salt Crypto secret and password
+*   📷  [Photo upload](https://github.com/Nickoskl/Tierlist/blob/main/src/api/imgur.ts), get and delete using external API (Imgur)
+*   ⏲  User sessions and session logout
+*   🔗  [Image serve from API link with buffer](https://github.com/Nickoskl/Tierlist/blob/main/src/controllers/imgur.ts) rather from Imgur link hiding original ID
+*   🦸‍♀️  Super users with logout, edit and page view privileges
+*   🙄  [A checksum](https://github.com/Nickoskl/Tierlist/blob/main/src/helpers/index.ts) for data validation that I ended up not using
+*   ➕  Multiple different actions (verified both on front/back-end) based on profile permissions such as
+    + Admins
+      + Can edit, delete any user
+      + Can see superuser and session status of the users and invalidate them
+      + Cave a useful view that can see all registered users
+      + Can create Templates for users to edit and order them.
+      + Can edit and delete any user Tierlist.
+    + Users
+      + Can create Tierlists from the admin Templates
+      + Can see user profiles and their tierlists
+      + Can edit and delete their own tierlists
 
 <h2>💖Like my work?</h2>
 
@@ -60,7 +71,36 @@ I have documented some [improvements here](https://github.com/Nickoskl/Tierlist/
 <img src="./UI%20Designs/profile.png" alt="project-screenshot" width="550" height="300/">
 
   
-  
+  <h2>🛠️ Try it yourself:</h2>
+
+<p>You will need</p>
+
+```
+1. A mongoDB database
+2. An Imgur account and a registered app associated with it,
+3. Node JS etc..
+```
+
+<p>1. create the .env file</p>
+
+```
+#Mine Looks Like this#
+MONGO_URL=<#YOUR DATABASE URL>
+CRYPTO_SECRET= <#A RANDOM SECRET STRING FOR CRYPTO>
+IMGUR_BEARER = <#A BEARER TOKEN THAT YOU CAN CREATE BY USING POSTMAN TO LOGIN WITH 0AUTH ON IMGUR API, MY VALUE LOOKS LIKE THIS: Bearer <#RANDOM_STRING#>>
+IMGUR_Username = <#YOUR IMGUR USERNAME>
+IMGUR_Album_Hash = <#THE ALBUM HASH FOR THE IMAGES TO BE UPLOADED TO>
+IMGUR_Client_Id = <#AND YOUR CLIENT ID>
+```
+
+<p>2. Clone the repo and</p>
+
+
+```
+npm i
+npm run start
+```
+
 
 
 <h2>🛡️ License:</h2>

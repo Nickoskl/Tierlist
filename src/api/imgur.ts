@@ -6,7 +6,7 @@ export const imgur_delete = async (deletehash:string):Promise<Axios.AxiosXHR<unk
 
         const options = {
             method: 'DELETE',
-            url: `https://api.imgur.com/3/account/${process.env.IMGUR_Username}/image/${deletehash}`,
+            url: `https://api.imgur.com/3/image/${deletehash}`,
             headers: {
                 'Authorization': process.env.IMGUR_BEARER,
             },

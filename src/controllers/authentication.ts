@@ -29,8 +29,7 @@ export const users_get = async (req:express.Request, res: express.Response) =>{
     try{
 
         const users = await getUsers();
-
-        return res.status(200).json(users).end();
+            return res.status(200).json(users).end();
 
     }catch(error){
         console.log("Error on users_get in func");
@@ -121,13 +120,19 @@ export const user_edit = async (req:express.Request, res:express.Response) =>{
             return res.status(200).json(user).end();
         }
 
+        if(!username && !password_new && !email && !password_old && !username && !sessionout && img && img.length>0){
+            user.avatar=img;
+            await user.save();
+            return res.status(200).json(user).end();
+        }
+
         // HARDCODED STOP TO EDIT ADMIN USER
         // HARDCODED STOP TO EDIT ADMIN USER
         // HARDCODED STOP TO EDIT ADMIN USER
 
-        // if(user.username == 'Admin'){
-        //     return res.sendStatus(418);
-        // }
+        if(user.username == 'Admin'){
+            return res.sendStatus(418);
+        }
 
         
         const isSuper = get(req, 'identity.super') as unknown as boolean;
@@ -145,7 +150,7 @@ export const user_edit = async (req:express.Request, res:express.Response) =>{
         user.authentication.password = authentication(user.authentication.salt, password_new);
         user.email = email;
 
-        if( img && img!==user.avatar){
+        if( img && img.length>0 && img!==user.avatar){
             user.avatar = img;
         }
 
@@ -249,16 +254,16 @@ export const user_login = async (req: express.Request, res:express.Response) =>{
         }
 
 
-            
-        user.session.token.push(authentication(salt, user._id.toString()));
+        const newToken = authentication(salt, user._id.toString())
+
+        user.session.token.push(newToken);
         user.session.date.push(new Date());
         user.session.ip.push(req.headers['x-forwarded-for'] || req.socket.remoteAddress);
     
         await user.save();
     
-        res.cookie('user_auth', user.session.token, {domain:'localhost', path: '/'});
-            
-        return res.status(200).json(user).end();        
+        res.cookie('user_auth', newToken, {domain:'localhost', path: '/'});
+            return res.status(200).json(user).end();      
 
     }catch(error){
         console.log(error);

@@ -9,7 +9,7 @@ import {imgur_delete, imgur_get, imgur_upload} from '../api/imgur';
 export const delete_img = async (req:express.Request, res:express.Response)=>{
     try{
 
-        const {id, ext} = req.params;
+        const {id} = req.params;
         
         const idNum:number = +id;
 
@@ -19,9 +19,6 @@ export const delete_img = async (req:express.Request, res:express.Response)=>{
             return res.sendStatus(400);
         }
 
-        if(ext == imgDb.ext){
-            return res.sendStatus(400);
-        }
 
         const resp:Axios.AxiosXHR<unknown> = await imgur_delete(imgDb.deletehash);
 
@@ -31,7 +28,7 @@ export const delete_img = async (req:express.Request, res:express.Response)=>{
 
         const delDB = await deleteImgById(parseInt(id));
 
-          return res.json(delDB).end();
+          return res.status(200).json(delDB).end();
 
     }catch(error){
         console.log(error);
@@ -80,7 +77,7 @@ export const upload_img = async (req:express.Request,res:express.Response)=>{
         });
 
         console.log(data);
-        return res.redirect(`/img/${idForDB}.${only_ext}`);
+        return res.status(200).json(idForDB).end();
 
     }catch(error){
         console.log(error);
@@ -91,13 +88,13 @@ export const upload_img = async (req:express.Request,res:express.Response)=>{
 export const get_img = async(req:express.Request,res:express.Response)=>{
     try{
 
-        const {id,ext} = req.params;
+        const {id} = req.params;
 
         const idNum:number = +id;
 
         const imgDb = await getImgById(idNum);
 
-        if(!imgDb || !id || !ext){
+        if(!imgDb || !id ){
             return res.sendStatus(400);
         }
 
@@ -114,7 +111,7 @@ export const get_img = async(req:express.Request,res:express.Response)=>{
         const imgData = await fetch(extract_link);
 
         //console.log(data);
-
+        res.setHeader('Content-Type', 'image/jpeg'); 
         return res.send(Buffer.from(await imgData.arrayBuffer()));
 
     }catch(error){
