@@ -4,26 +4,9 @@ import { random, authentication } from '../helpers';
 import { forEach, get } from 'lodash';
 import { deleteTierlistById } from '../db/tier_list';
 import { imgur_upload, imgur_delete } from '../api/imgur';
-import { createImgUpload, getImgById } from '../db/imgur';
+import { createImgUpload, deleteImgById, getImgById } from '../db/imgur';
 import { rand_id } from "../helpers";
 
-export const users_lists_get = async (req:express.Request, res:express.Response) =>{
-    try{
-
-        const {id} = req.params;
-
-        const lists = await getUserById(id);
-
-        if(!lists){
-            return res.sendStatus(400);
-        }
-
-        return res.status(200).json(lists.lists).end();
-
-    }catch(error){
-
-    }
-}
 
 export const users_get = async (req:express.Request, res: express.Response) =>{
     try{
@@ -44,7 +27,7 @@ export const user_delete = async (req:express.Request, res:express.Response) =>{
 
         const user = await getUserById(id);
 
-        if(!user || !user.lists || !user.avatar){
+        if(!user || !user.avatar){
             return res.sendStatus(400);
         }
 
@@ -70,9 +53,9 @@ export const user_delete = async (req:express.Request, res:express.Response) =>{
             }
         }
 
-        user.lists.forEach(async tierlist => {
-            await deleteTierlistById(tierlist);
-        });
+        // user.lists.forEach(async tierlist => { #########TODO
+        //     await deleteTierlistById(tierlist);
+        // });
 
 
         const user_del = await deleteUserById(id);
@@ -121,6 +104,14 @@ export const user_edit = async (req:express.Request, res:express.Response) =>{
         }
 
         if(!username && !password_new && !email && !password_old && !username && !sessionout && img && img.length>0){
+
+            if(user.avatar && typeof user.avatar !== 'string'){
+                const oldUserImg= await getImgById(user.avatar);
+                if(oldUserImg){
+                    await deleteImgById(user.avatar);
+                }
+            }
+
             user.avatar=img;
             await user.save();
             return res.status(200).json(user).end();
@@ -151,6 +142,14 @@ export const user_edit = async (req:express.Request, res:express.Response) =>{
         user.email = email;
 
         if( img && img.length>0 && img!==user.avatar){
+
+            if(user.avatar && typeof user.avatar !== 'string'){
+                const oldUserImg= await getImgById(user.avatar);
+                if(oldUserImg){
+                    await deleteImgById(user.avatar);
+                }
+            }
+            
             user.avatar = img;
         }
 
@@ -171,11 +170,15 @@ export const user_get = async (req:express.Request, res:express.Response) =>{
         const isSuper = get(req, 'identity.super') as unknown as boolean;
         const loginId = get(req, 'identity._id') as unknown as string;
 
+        if(!id){
+            return res.sendStatus(400);
+        }
+
         const user = await getUserById(id);
 
 
         if(!user || !user.session){
-            return res.sendStatus(400);
+            return res.sendStatus(404);
         }
 
         if(isSuper || loginId == id){

@@ -1,6 +1,6 @@
 import express from 'express';
 import { get } from 'lodash';
-import { createTierlist, deleteTierlistById, getTierlistById, getTierlists, } from '../db/tier_list';
+import { createTierlist, deleteTierlistById, getTierlistById, getTierlists, getTierlistsByUser } from '../db/tier_list';
 import { getTemplateTierlistById } from '../db/tier_template';
 import { list_checksum_calc } from '../helpers';
 import { getUserById } from '../db/users';
@@ -121,7 +121,6 @@ export const tier_list_create = async (req: express.Request, res: express.Respon
             }
         });
 
-        userFromDB.lists.push(tierlist._id);
 
         await userFromDB.save();
 
@@ -130,4 +129,27 @@ export const tier_list_create = async (req: express.Request, res: express.Respon
         console.log(error);
         return res.sendStatus(400);
     }   
+}
+
+export const tier_list_user_get = async (req:express.Request, res:express.Response)=>{
+
+    try{
+
+        const {id}=req.params;
+
+        if(!id){
+            return res.sendStatus(400);
+        }
+
+        const tierlists_by_user = await getTierlistsByUser(id)
+
+        return res.status(200).json(tierlists_by_user).end();
+
+    }catch(error){
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
+
+
 }

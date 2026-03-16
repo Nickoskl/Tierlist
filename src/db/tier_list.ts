@@ -22,3 +22,4 @@ export const getTierlistByName = (searchname:string) =>TierModel.findOne({name: 
 export const getTierlistById = (t_id:string) => TierModel.findById(t_id);
 export const createTierlist = (values: Record<string, any>) => new TierModel(values).save().then((tierlist) => tierlist.toObject());
 export const deleteTierlistById = (t_id:string) =>TierModel.findOneAndDelete({_id: t_id});
+export const getTierlistsByUser = (u_id:string) =>TierModel.find({by: u_id});

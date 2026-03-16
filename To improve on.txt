@@ -15,10 +15,11 @@
 +Better and shorter URLS
 +Do not work with mongoDB for a project based on arrays
 +Better cookie security. Encryption ect..
-+Better router and internal information sharing with less hits on the database.
++Better router and internal information sharing with less hits on the database. (Permission check with middleware inside controller)
 +Better scalability
 +Asset for deletion should be scheduled for later at a specific time for controlled deletion
 +Validate images/files of the contents before uploading to the server
 +Dont use proprietary functions for DB interactions for better code readability
 +Should have used FORMDATA for user credentials
++User permissions should be passed with eatch request to dynamically visualise how they change with eatch page
 ##this is getting too long 😢

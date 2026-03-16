@@ -20,7 +20,7 @@ export const delete_img = async (req:express.Request, res:express.Response)=>{
         }
 
 
-        const resp:Axios.AxiosXHR<unknown> = await imgur_delete(imgDb.deletehash);
+        const resp = await imgur_delete(imgDb.deletehash);
 
         if(resp.status !== 200){
             return resp;
@@ -51,7 +51,7 @@ export const upload_img = async (req:express.Request,res:express.Response)=>{
         const only_ext:string = req.file.mimetype.substring(slash_pos+1);
 
 
-        const resp:Axios.AxiosXHR<FormData> = await imgur_upload(req.file,process.env.IMGUR_Album_Hash);
+        const resp = await imgur_upload(req.file,process.env.IMGUR_Album_Hash);
 
 
         if(resp.status !== 200 || !resp){
@@ -73,7 +73,8 @@ export const upload_img = async (req:express.Request,res:express.Response)=>{
             id: idForDB,
             imgur: data.id,
             ext: only_ext,
-            deletehash: data.deletehash
+            deletehash: data.deletehash,
+            temp:true
         });
 
         console.log(data);
@@ -100,7 +101,7 @@ export const get_img = async(req:express.Request,res:express.Response)=>{
 
         console.log(rand_id());
 
-        const resp:Axios.AxiosXHR<unknown> = await imgur_get(imgDb.imgur);
+        const resp = await imgur_get(imgDb.imgur);
 
         if(resp.status !== 200){
             return resp;
@@ -118,4 +119,29 @@ export const get_img = async(req:express.Request,res:express.Response)=>{
         console.log(error);
         return res.sendStatus(400);
     }
+}
+
+export const update_img=async(req:express.Request,res:express.Response)=>{
+
+    try{
+
+        const id:number=+req.params.id;
+
+        const img = await getImgById(id);
+
+        if(!img){
+            return res.sendStatus(400);
+        }
+
+        img.temp=false;
+        await img.save();
+
+        return res.status(200).json(img).end();
+
+
+    }catch(error){
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
 }

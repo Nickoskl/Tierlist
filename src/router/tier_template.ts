@@ -5,6 +5,6 @@ import { mustBeLoggedIn , mustBeAdmin } from '../middlewares';
 export default (router: express.Router) => {
     router.post('/template/create',mustBeLoggedIn, mustBeAdmin, tier_template_create);
     router.get('/template', template_list);
-    router.get('/template/:id',mustBeLoggedIn, tier_template_get);
+    router.get('/template/:id', tier_template_get);
     router.delete('/template/delete/:id', mustBeLoggedIn, mustBeAdmin, tier_template_delete)
 };
