@@ -14,5 +14,3 @@ export const list_checksum_calc =(level_table:string[]|string, img_table:string[
 
 
 export const rand_id =() => crypto.randomInt(10000,99999);
-
-// TODO Incorporate User salt to list checksum

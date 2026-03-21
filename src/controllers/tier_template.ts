@@ -21,6 +21,7 @@ export const tier_template_delete = async (req:express.Request, res:express.Resp
         }
         
         tierlists.forEach(async tierlist => {
+            await deleteImgById(+tierlist.img);
             await deleteTierlistById(tierlist._id as unknown as string);
         });
 
@@ -64,7 +65,7 @@ export const tier_template_get = async (req:express.Request, res: express.Respon
         return res.sendStatus(400);
     }
     
-    const list = await getTemplateTierlistById(id).select('+list_config.level_table +list_config.img_table +list_config.list_checksum');
+    const list = await getTemplateTierlistById(id).select('+img +list_config.level_table +list_config.img_table +list_config.list_checksum');
     if (!list || !list.list_config || !list.list_config.level_table){
         return res.sendStatus(400);
     }
@@ -94,6 +95,17 @@ export const tier_template_create = async (req: express.Request, res: express.Re
             console.log(req.body);
             return res.sendStatus(400);
         }
+
+        
+        const dbBackground = await getImgById(background);
+
+        if(!dbBackground){
+            return res.sendStatus(400);
+        }
+
+        dbBackground.temp=false;
+        await dbBackground.save();
+
 
         const template = await createTemplateTierlist({
             name,

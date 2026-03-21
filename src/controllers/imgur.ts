@@ -74,7 +74,8 @@ export const upload_img = async (req:express.Request,res:express.Response)=>{
             imgur: data.id,
             ext: only_ext,
             deletehash: data.deletehash,
-            temp:true
+            temp:true,
+            created:new Date()
         });
 
         console.log(data);
@@ -91,15 +92,20 @@ export const get_img = async(req:express.Request,res:express.Response)=>{
 
         const {id} = req.params;
 
+        
+        if( !id ){
+
+            return res.sendStatus(400);
+        }
+
         const idNum:number = +id;
 
         const imgDb = await getImgById(idNum);
 
-        if(!imgDb || !id ){
-            return res.sendStatus(400);
+        if(!imgDb){
+            return res.sendStatus(404);
         }
 
-        console.log(rand_id());
 
         const resp = await imgur_get(imgDb.imgur);
 

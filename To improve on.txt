@@ -22,4 +22,5 @@
 +Dont use proprietary functions for DB interactions for better code readability
 +Should have used FORMDATA for user credentials
 +User permissions should be passed with eatch request to dynamically visualise how they change with eatch page
++Always check req url for non number or letter characters (injection)
 ##this is getting too long 😢

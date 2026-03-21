@@ -4,13 +4,21 @@ import { createTierlist, deleteTierlistById, getTierlistById, getTierlists, getT
 import { getTemplateTierlistById } from '../db/tier_template';
 import { list_checksum_calc } from '../helpers';
 import { getUserById } from '../db/users';
+import { deleteImgById, getImgById } from '../db/imgur';
 
 export const tier_list_delete = async (req:express.Request, res:express.Response) =>{
     try{
 
         const {id} = req.params;
 
-        const tierlist = await deleteTierlistById(id);
+        const tierlist = await getTierlistById(id);
+
+        if(!tierlist || !tierlist.img){
+            return res.sendStatus(400);
+        }
+
+        await deleteImgById(+tierlist.img);
+        await deleteTierlistById(id);
 
         return res.json(tierlist);
 
@@ -26,9 +34,13 @@ export const tier_list_update = async (req:express.Request, res:express.Response
         const {id} = req.params;
         const {name, description,background, placement} = req.body;
 
-        const tierlist = await getTierlistById(id).select('+list_config.placement');
+        if(!id || !name || !description || !background || !placement){
+            return res.sendStatus(400);
+        }
 
-        if(!id || !tierlist || !tierlist.name || !tierlist.list_config || !name || !description || !background || !placement){
+        const tierlist = await getTierlistById(id).select('+img +list_config.placement');
+
+        if( !tierlist || !tierlist.img || !tierlist.name || !tierlist.list_config ){
             return res.sendStatus(400);
         }
 
@@ -36,10 +48,14 @@ export const tier_list_update = async (req:express.Request, res:express.Response
             console.log('Tierlist update length does not match previous length');
             return res.sendStatus(400);
         }
+
+        if(tierlist.img){
+            await deleteImgById(+tierlist.img)
+        }
         
         tierlist.name = name;
         tierlist.description = description;
-        tierlist.background = background;
+        tierlist.img = background;
         tierlist.list_config.placement = placement;
         tierlist.last_edit = new Date();
 
@@ -74,7 +90,7 @@ export const tier_list_get = async (req:express.Request, res:express.Response) =
             return res.sendStatus(400);
         }
         
-        const list = await getTierlistById(id).select('+list_config.placement +list_config.list_checksum');
+        const list = await getTierlistById(id).select('+img +list_config.placement +list_config.list_checksum');
         return res.status(200).json(list).end();
     }catch(error){
         console.log(error);
@@ -108,10 +124,22 @@ export const tier_list_create = async (req: express.Request, res: express.Respon
 
         const tierlist_name:string = templateFromDB.name + " - " + name;
 
+        const dbBackground = await getImgById(background);
+
+        if(!dbBackground){
+            return res.sendStatus(400);
+        }
+
+        dbBackground.temp=false;
+        await dbBackground.save();
+
+
+
         const tierlist = await createTierlist({
             name: tierlist_name,
             description,
             template,
+            img:background,
             created: new Date(),
             by: loggedInUserName,
             last_edit: new Date(),

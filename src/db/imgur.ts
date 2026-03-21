@@ -6,7 +6,8 @@ const ImgurDBSchema = new mongoose.Schema({
     ext: {type: String, required:true},
     by:{type:String,required:true},
     deletehash: {type: String, required:true},
-    temp: {type: Boolean, required:true}
+    temp: {type: Boolean, required:true},
+    created:{type: Date, required:true}
 });
 
 export const ImgurModel = mongoose.model('Imgur', ImgurDBSchema);
@@ -15,4 +16,8 @@ export const getImgById = (url_id:Number) => ImgurModel.findOne({id: url_id});
 export const getImgsByUserId = (usr_id:String) => ImgurModel.find({by: usr_id});
 export const createImgUpload = (values: Record<string, any>) => new ImgurModel(values).save().then((img) => img.toObject());
 export const deleteImgById = (url_id:Number) => ImgurModel.findOneAndDelete({id: url_id});
-export const deleteAllTemps = ()=>ImgurModel.deleteMany({temp:true});
+export const deleteAllTemps = () =>
+  ImgurModel.deleteMany({
+    temp: true,
+    created: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+  });

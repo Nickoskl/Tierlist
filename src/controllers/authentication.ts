@@ -176,7 +176,6 @@ export const user_get = async (req:express.Request, res:express.Response) =>{
 
         const user = await getUserById(id);
 
-
         if(!user || !user.session){
             return res.sendStatus(404);
         }
@@ -230,7 +229,6 @@ export const user_login = async (req: express.Request, res:express.Response) =>{
             if(!user){
                 return res.sendStatus(403);
             }
-            console.log("User already logged in");
             return res.status(200).json(user).end();
         }
 
@@ -241,7 +239,7 @@ export const user_login = async (req: express.Request, res:express.Response) =>{
         const user = await getUserByEmail(email).select('+authentication.salt +authentication.password +session.token +session.date +session.ip');
 
         if(!user || !user.authentication || !user.authentication.salt || !user.session){
-            console.log(user);
+            console.log(`User not found (${email})`)
             return res.sendStatus(404);
         }
 

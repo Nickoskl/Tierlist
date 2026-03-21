@@ -12,7 +12,7 @@
 Proper TODO file to prevent me from ripping my eyes out every time I search for my progress.
 
 
-Delete Tierlist background before db deletion
-Check for image use or abandonment on post fields where image is required
-Update user edit to handle updates on hist lists
+Update user edit to handle updates on hist lists?
 Need a solution for template background generation
+Need max length on text fields
+Fix error in user_func when user id www.google.gr

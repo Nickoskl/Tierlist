@@ -35,6 +35,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^9.2.1",
     "multer": "^1.4.5-lts.1",
+    "node-cron": "^4.2.1",
     "rest_api": "file:",
     "tierlist": "file:"
   }
